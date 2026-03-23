@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <radialGradient id="milky" cx="50%" cy="45%" r="55%">
+      <stop offset="0%"   stop-color="#8070c0" stop-opacity="0.6"/>
+      <stop offset="40%"  stop-color="#3828a0" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#080418" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="nssky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#020410"/>
+      <stop offset="40%"  stop-color="#060820"/>
+      <stop offset="70%"  stop-color="#0c1030"/>
+      <stop offset="100%" stop-color="#181828"/>
+    </linearGradient>
+    <linearGradient id="desert" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#1c1828"/>
+      <stop offset="100%" stop-color="#0c0c18"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Night sky -->
+  <rect width="1200" height="800" fill="url(#nssky)"/>
+
+  <!-- Milky Way band -->
+  <ellipse cx="600" cy="360" rx="700" ry="160" fill="url(#milky)" transform="rotate(-15,600,360)"/>
+  <!-- Milky Way core glow -->
+  <ellipse cx="620" cy="350" rx="300" ry="60"  fill="#6050b0" opacity="0.18" transform="rotate(-15,620,350)"/>
+  <ellipse cx="640" cy="345" rx="140" ry="30"  fill="#9080e0" opacity="0.22" transform="rotate(-15,640,345)"/>
+
+  <!-- Stars — various sizes & opacities (many!) -->
+  <g fill="#ffffff">
+    <!-- Bright large stars -->
+    <circle cx="120"  cy="80"  r="2.5" opacity="0.95"/>
+    <circle cx="350"  cy="45"  r="2.2" opacity="0.9"/>
+    <circle cx="780"  cy="60"  r="2.5" opacity="0.92"/>
+    <circle cx="1050" cy="90"  r="2.2" opacity="0.88"/>
+    <circle cx="980"  cy="150" r="2.8" opacity="0.95"/>
+    <circle cx="200"  cy="200" r="2.2" opacity="0.85"/>
+    <circle cx="450"  cy="120" r="2"   opacity="0.9"/>
+    <circle cx="860"  cy="200" r="2.5" opacity="0.88"/>
+    <circle cx="60"   cy="350" r="2.2" opacity="0.8"/>
+    <circle cx="1140" cy="300" r="2.5" opacity="0.92"/>
+
+    <!-- Medium stars -->
+    <circle cx="80"   cy="130" r="1.5" opacity="0.8"/>
+    <circle cx="180"  cy="55"  r="1.5" opacity="0.75"/>
+    <circle cx="260"  cy="95"  r="1.5" opacity="0.8"/>
+    <circle cx="310"  cy="150" r="1.5" opacity="0.7"/>
+    <circle cx="420"  cy="70"  r="1.5" opacity="0.78"/>
+    <circle cx="490"  cy="40"  r="1.5" opacity="0.82"/>
+    <circle cx="560"  cy="90"  r="1.5" opacity="0.75"/>
+    <circle cx="630"  cy="50"  r="1.5" opacity="0.8"/>
+    <circle cx="700"  cy="110" r="1.5" opacity="0.72"/>
+    <circle cx="760"  cy="30"  r="1.5" opacity="0.85"/>
+    <circle cx="840"  cy="80"  r="1.5" opacity="0.78"/>
+    <circle cx="910"  cy="130" r="1.5" opacity="0.7"/>
+    <circle cx="1000" cy="55"  r="1.5" opacity="0.8"/>
+    <circle cx="1080" cy="140" r="1.5" opacity="0.75"/>
+    <circle cx="1160" cy="60"  r="1.5" opacity="0.82"/>
+    <circle cx="150"  cy="280" r="1.5" opacity="0.65"/>
+    <circle cx="330"  cy="250" r="1.5" opacity="0.7"/>
+    <circle cx="1100" cy="220" r="1.5" opacity="0.68"/>
+
+    <!-- Small stars -->
+    <circle cx="95"  cy="60"  r="1" opacity="0.7"/>
+    <circle cx="145" cy="160" r="1" opacity="0.6"/>
+    <circle cx="225" cy="120" r="1" opacity="0.65"/>
+    <circle cx="295" cy="60"  r="1" opacity="0.7"/>
+    <circle cx="365" cy="190" r="1" opacity="0.6"/>
+    <circle cx="435" cy="160" r="1" opacity="0.65"/>
+    <circle cx="505" cy="65"  r="1" opacity="0.7"/>
+    <circle cx="575" cy="140" r="1" opacity="0.6"/>
+    <circle cx="645" cy="75"  r="1" opacity="0.65"/>
+    <circle cx="715" cy="145" r="1" opacity="0.6"/>
+    <circle cx="795" cy="100" r="1" opacity="0.68"/>
+    <circle cx="875" cy="50"  r="1" opacity="0.7"/>
+    <circle cx="945" cy="160" r="1" opacity="0.62"/>
+    <circle cx="1025" cy="95" r="1" opacity="0.65"/>
+    <circle cx="1095" cy="175" r="1" opacity="0.6"/>
+    <circle cx="1165" cy="110" r="1" opacity="0.68"/>
+    <circle cx="55"  cy="250" r="1" opacity="0.55"/>
+    <circle cx="280" cy="295" r="1" opacity="0.5"/>
+    <circle cx="1040" cy="270" r="1" opacity="0.52"/>
+    <circle cx="1180" cy="240" r="1" opacity="0.55"/>
+  </g>
+
+  <!-- Star twinkle effect (slightly blurred white +) -->
+  <g fill="#ffffff" opacity="0.5">
+    <rect x="118" y="78" width="1" height="5"/>
+    <rect x="120" y="78" width="5" height="1"/>
+    <rect x="978" y="148" width="1" height="5"/>
+    <rect x="978" y="150" width="5" height="1"/>
+    <rect x="778" y="58"  width="1" height="5"/>
+    <rect x="778" y="60"  width="5" height="1"/>
+  </g>
+
+  <!-- Desert landscape silhouette -->
+  <path d="M 0 600
+    Q 60 585 120 590
+    Q 200 570 280 595
+    Q 360 610 440 580
+    Q 480 565 520 580
+    Q 560 595 600 575
+    Q 660 555 720 580
+    Q 780 595 840 565
+    Q 900 545 960 570
+    Q 1040 590 1100 565
+    Q 1160 550 1200 570
+    L 1200 800 L 0 800 Z"
+    fill="url(#desert)"/>
+
+  <!-- Rock formation / mesa -->
+  <rect x="480" y="530" width="240" height="80" rx="4" fill="#141220"/>
+  <rect x="520" y="490" width="160" height="45" rx="3" fill="#100e1c"/>
+  <rect x="550" y="460" width="100" height="35" rx="3" fill="#0e0c18"/>
+
+  <!-- Cactus left -->
+  <rect x="180" y="510" width="12" height="90"  fill="#0e1a0a"/>
+  <rect x="162" y="540" width="20" height="8"   fill="#0e1a0a"/>
+  <rect x="150" y="532" width="12" height="50"  fill="#0e1a0a"/>
+  <rect x="192" y="555" width="20" height="8"   fill="#0e1a0a"/>
+  <rect x="204" y="547" width="12" height="50"  fill="#0e1a0a"/>
+
+  <!-- Cactus right -->
+  <rect x="1020" y="505" width="12" height="95" fill="#0e1a0a"/>
+  <rect x="1002" y="535" width="20" height="8"  fill="#0e1a0a"/>
+  <rect x="990"  y="527" width="12" height="55" fill="#0e1a0a"/>
+  <rect x="1032" y="548" width="20" height="8"  fill="#0e1a0a"/>
+  <rect x="1044" y="540" width="12" height="52" fill="#0e1a0a"/>
+
+  <!-- Shooting star -->
+  <line x1="300" y1="170" x2="380" y2="140" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+  <circle cx="298" cy="171" r="2" fill="#ffffff" opacity="0.8"/>
+
+  <!-- Label -->
+  <rect x="0" y="745" width="1200" height="55" fill="rgba(0,0,0,0.5)"/>
+  <text x="24" y="780" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#c0b0f0">Night Sky</text>
+  <text x="24" y="798" font-family="system-ui,sans-serif" font-size="14" fill="#8070c0">Nature &bull; Served via CloudFront + S3</text>
+</svg>

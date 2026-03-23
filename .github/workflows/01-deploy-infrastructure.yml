@@ -1,0 +1,105 @@
+name: "01 · Deploy Infrastructure (Terraform)"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend-cdn-project/infrastructure/terraform/**"
+      - ".github/workflows/01-deploy-infrastructure.yml"
+  workflow_dispatch:
+    inputs:
+      env_name:
+        description: "Environment name (production or staging)"
+        required: false
+        default: "production"
+      action:
+        description: "Terraform action to run (plan or apply)"
+        required: false
+        default: "apply"
+      acm_cert_arn:
+        description: "ACM certificate ARN for custom domain HTTPS (optional)"
+        required: false
+        default: ""
+
+permissions:
+  id-token: write   # OIDC token for AWS authentication
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}          # Terraform Cloud API token
+  TF_WORKSPACE: frontend-cdn-project                  # Must match workspace name in main.tf
+
+jobs:
+  terraform:
+    name: "Terraform ${{ github.event.inputs.action || 'apply' }}"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-cdn-project/infrastructure/terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: frontend-cdn-terraform
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.6"
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan \
+            -var="env_name=${{ github.event.inputs.env_name || 'production' }}" \
+            -var="acm_cert_arn=${{ github.event.inputs.acm_cert_arn }}" \
+            -out=tfplan \
+            -no-color 2>&1 | tee plan_output.txt
+
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.action != 'plan' }}
+        run: terraform apply -auto-approve tfplan
+
+      - name: Capture outputs
+        if: ${{ github.event.inputs.action != 'plan' }}
+        run: terraform output -json > deployment_output.json
+
+      - name: Upload deployment output
+        if: ${{ github.event.inputs.action != 'plan' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-output
+          path: frontend-cdn-project/infrastructure/terraform/deployment_output.json
+          if-no-files-found: warn
+
+      - name: Post summary
+        if: always()
+        run: |
+          echo "## Terraform Infrastructure Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Setting | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ github.event.inputs.env_name || 'production' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Action | ${{ github.event.inputs.action || 'apply' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Workspace | ${{ env.TF_WORKSPACE }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f deployment_output.json ]; then
+            echo "### Outputs" >> $GITHUB_STEP_SUMMARY
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            cat deployment_output.json >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi

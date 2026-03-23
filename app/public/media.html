@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Gallery — CloudEdge</title>
+  <link rel="stylesheet" href="/public/css/styles.css" />
+  <link rel="stylesheet" href="/public/css/media.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">&#9729;</span>
+        <span class="logo-text">CloudEdge</span>
+      </div>
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="/media" class="nav-active">Media Gallery</a>
+        <a href="/#architecture">Architecture</a>
+        <a href="/#security">Security</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Page Hero ───────────────────────────────────────────────────────── -->
+  <section class="media-hero">
+    <div class="media-hero-content">
+      <h1>Media Gallery</h1>
+      <p>Photos and videos hosted on <strong>Elastic Beanstalk</strong>, edge-cached via <strong>CloudFront</strong>, with assets stored in <strong>S3</strong>.</p>
+    </div>
+  </section>
+
+  <!-- ── Controls ────────────────────────────────────────────────────────── -->
+  <div class="gallery-controls-wrap">
+    <div class="gallery-controls">
+
+      <!-- Filter tabs -->
+      <div class="filter-tabs" role="tablist">
+        <button class="filter-tab active" data-filter="all"    role="tab" aria-selected="true">All</button>
+        <button class="filter-tab"        data-filter="photo"  role="tab" aria-selected="false">Photos</button>
+        <button class="filter-tab"        data-filter="video"  role="tab" aria-selected="false">Videos</button>
+      </div>
+
+      <!-- Item count -->
+      <span class="gallery-count" id="gallery-count">Loading…</span>
+
+    </div>
+  </div>
+
+  <!-- ── Gallery Grid ─────────────────────────────────────────────────────── -->
+  <main class="gallery-wrap">
+    <div class="gallery-grid" id="gallery-grid" aria-live="polite">
+      <!-- Skeleton placeholders while loading -->
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="gallery-empty hidden" id="gallery-empty">
+      <span>&#128443;</span>
+      <p>No media found for this filter.</p>
+    </div>
+  </main>
+
+  <!-- ── Photo Lightbox ───────────────────────────────────────────────────── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+    <button class="lightbox-close" id="lb-close" aria-label="Close">&times;</button>
+    <button class="lightbox-prev"  id="lb-prev"  aria-label="Previous">&#8249;</button>
+    <button class="lightbox-next"  id="lb-next"  aria-label="Next">&#8250;</button>
+    <div class="lightbox-inner">
+      <img class="lightbox-img" id="lb-img" src="" alt="" />
+      <div class="lightbox-caption" id="lb-caption"></div>
+    </div>
+  </div>
+
+  <!-- ── Video Modal ──────────────────────────────────────────────────────── -->
+  <div class="video-modal" id="video-modal" role="dialog" aria-modal="true" aria-label="Video player" hidden>
+    <div class="video-modal-backdrop" id="vm-backdrop"></div>
+    <div class="video-modal-inner">
+      <button class="video-modal-close" id="vm-close" aria-label="Close video">&times;</button>
+      <div class="video-modal-title-bar">
+        <span class="video-modal-title" id="vm-title"></span>
+        <span class="video-modal-cat"   id="vm-category"></span>
+      </div>
+      <div class="video-wrapper">
+        <video
+          id="vm-player"
+          controls
+          preload="metadata"
+          playsinline
+          crossorigin="anonymous"
+        >
+          <source id="vm-source" src="" type="video/mp4" />
+          Your browser does not support the HTML5 video element.
+        </video>
+      </div>
+      <p class="video-modal-desc" id="vm-desc"></p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>
+      Media served from <strong>S3</strong> via <strong>CloudFront</strong> &bull;
+      App hosted on <strong>Elastic Beanstalk</strong> &bull;
+      Protected by <strong>WAF</strong>
+    </p>
+  </footer>
+
+  <script src="/public/js/media.js"></script>
+</body>
+</html>

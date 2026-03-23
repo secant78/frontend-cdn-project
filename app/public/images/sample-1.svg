@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0e2e"/>
+      <stop offset="50%" stop-color="#1a3a6e"/>
+      <stop offset="100%" stop-color="#4a7fc1"/>
+    </linearGradient>
+    <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8f4ff"/>
+      <stop offset="100%" stop-color="#b8d4f0"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2d4a22"/>
+      <stop offset="100%" stop-color="#1a2e14"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="75%" cy="25%" r="12%">
+      <stop offset="0%" stop-color="#fff4aa" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#fff4aa" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="800" fill="url(#sky)"/>
+
+  <!-- Sun glow -->
+  <ellipse cx="900" cy="200" rx="140" ry="140" fill="url(#sun)"/>
+
+  <!-- Distant mountains -->
+  <polygon points="0,560 180,280 360,480 500,300 680,420 820,260 1000,400 1200,300 1200,600 0,600" fill="#1c3a5e" opacity="0.6"/>
+
+  <!-- Mid mountains -->
+  <polygon points="0,620 120,380 260,540 400,350 560,500 700,320 860,480 1040,340 1200,460 1200,700 0,700" fill="#1a2e4a" opacity="0.75"/>
+
+  <!-- Main peaks -->
+  <!-- Left peak -->
+  <polygon points="80,720 220,320 360,720" fill="#2c4a6e"/>
+  <polygon points="160,720 220,420 280,720" fill="#3a5a80"/>
+  <!-- Snow cap left -->
+  <polygon points="195,340 220,320 245,340 232,370 208,370" fill="url(#snow)"/>
+
+  <!-- Center peak -->
+  <polygon points="380,720 540,220 700,720" fill="#2a4868"/>
+  <polygon points="440,720 540,300 640,720" fill="#365878"/>
+  <!-- Snow cap center -->
+  <polygon points="510,250 540,220 570,250 558,310 522,310" fill="url(#snow)"/>
+
+  <!-- Right peak -->
+  <polygon points="760,720 900,360 1040,720" fill="#263e5c"/>
+  <polygon points="820,720 900,440 980,720" fill="#324e6e"/>
+  <!-- Snow cap right -->
+  <polygon points="878,382 900,360 922,382 912,420 888,420" fill="url(#snow)"/>
+
+  <!-- Foreground ground -->
+  <rect x="0" y="680" width="1200" height="120" fill="url(#ground)"/>
+
+  <!-- Pine trees silhouette -->
+  <g fill="#0d1f0a" opacity="0.9">
+    <polygon points="50,680 70,620 90,680"/>
+    <polygon points="60,680 70,600 80,680"/>
+    <polygon points="110,680 135,610 160,680"/>
+    <polygon points="120,680 135,590 150,680"/>
+    <polygon points="180,680 200,625 220,680"/>
+    <polygon points="960,680 980,615 1000,680"/>
+    <polygon points="970,680 980,595 990,680"/>
+    <polygon points="1040,680 1065,620 1090,680"/>
+    <polygon points="1100,680 1120,630 1140,680"/>
+    <polygon points="1110,680 1120,610 1130,680"/>
+  </g>
+
+  <!-- Stars -->
+  <g fill="#ffffff">
+    <circle cx="100" cy="60" r="1.5" opacity="0.8"/>
+    <circle cx="200" cy="40" r="1" opacity="0.6"/>
+    <circle cx="350" cy="80" r="1.5" opacity="0.7"/>
+    <circle cx="450" cy="30" r="1" opacity="0.9"/>
+    <circle cx="600" cy="55" r="1.5" opacity="0.6"/>
+    <circle cx="700" cy="20" r="1" opacity="0.8"/>
+    <circle cx="800" cy="70" r="1.5" opacity="0.5"/>
+    <circle cx="1050" cy="45" r="1" opacity="0.7"/>
+    <circle cx="1150" cy="30" r="1.5" opacity="0.8"/>
+  </g>
+
+  <!-- Label overlay -->
+  <rect x="0" y="745" width="1200" height="55" fill="rgba(0,0,0,0.35)"/>
+  <text x="24" y="780" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#e8f4ff">Mountain Peaks</text>
+  <text x="24" y="798" font-family="system-ui,sans-serif" font-size="14" fill="#90aece">Nature &bull; Served via CloudFront + S3</text>
+</svg>

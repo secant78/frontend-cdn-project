@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="canopy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1f08"/>
+      <stop offset="100%" stop-color="#162e10"/>
+    </linearGradient>
+    <linearGradient id="path" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a6a3a"/>
+      <stop offset="100%" stop-color="#b08040"/>
+    </linearGradient>
+    <linearGradient id="lightbeam" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#c8f090" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#c8f090" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="fground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a14"/>
+      <stop offset="100%" stop-color="#0e1e08"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background forest darkness -->
+  <rect width="1200" height="800" fill="#0a1506"/>
+
+  <!-- Deep background trees -->
+  <g fill="#0e1e0a" opacity="0.8">
+    <rect x="0"   y="100" width="80" height="700"/>
+    <rect x="60"  y="60"  width="70" height="740"/>
+    <rect x="120" y="120" width="75" height="680"/>
+    <rect x="1060" y="80"  width="80" height="720"/>
+    <rect x="1120" y="110" width="80" height="690"/>
+  </g>
+
+  <!-- Tree trunks - left side -->
+  <g fill="#2a1a0a">
+    <rect x="30"  y="350" width="22" height="450"/>
+    <rect x="120" y="300" width="18" height="500"/>
+    <rect x="200" y="280" width="20" height="520"/>
+    <rect x="290" y="320" width="16" height="480"/>
+    <rect x="360" y="360" width="18" height="440"/>
+  </g>
+
+  <!-- Tree trunks - right side -->
+  <g fill="#2a1a0a">
+    <rect x="820"  y="300" width="20" height="500"/>
+    <rect x="890"  y="270" width="18" height="530"/>
+    <rect x="970"  y="290" width="22" height="510"/>
+    <rect x="1050" y="340" width="18" height="460"/>
+    <rect x="1130" y="310" width="20" height="490"/>
+  </g>
+
+  <!-- Canopy - left -->
+  <g fill="#122610">
+    <ellipse cx="40"  cy="260" rx="70" ry="180"/>
+    <ellipse cx="130" cy="200" rx="75" ry="200"/>
+    <ellipse cx="210" cy="180" rx="80" ry="210"/>
+    <ellipse cx="300" cy="220" rx="70" ry="190"/>
+    <ellipse cx="370" cy="250" rx="65" ry="170"/>
+  </g>
+  <!-- Canopy highlights left -->
+  <g fill="#1a3618" opacity="0.7">
+    <ellipse cx="30"  cy="240" rx="40" ry="100"/>
+    <ellipse cx="118" cy="185" rx="45" ry="110"/>
+    <ellipse cx="198" cy="165" rx="50" ry="115"/>
+  </g>
+
+  <!-- Canopy - right -->
+  <g fill="#0e2010">
+    <ellipse cx="830"  cy="200" rx="80" ry="210"/>
+    <ellipse cx="900"  cy="175" rx="75" ry="220"/>
+    <ellipse cx="980"  cy="190" rx="80" ry="200"/>
+    <ellipse cx="1060" cy="230" rx="70" ry="180"/>
+    <ellipse cx="1140" cy="205" rx="75" ry="195"/>
+  </g>
+
+  <!-- Light beams from canopy -->
+  <polygon points="400,0 450,0 380,800 280,800" fill="url(#lightbeam)" opacity="0.4"/>
+  <polygon points="550,0 590,0 530,800 450,800" fill="url(#lightbeam)" opacity="0.3"/>
+  <polygon points="680,0 710,0 760,800 690,800" fill="url(#lightbeam)" opacity="0.25"/>
+
+  <!-- Forest floor -->
+  <rect x="0" y="650" width="1200" height="150" fill="url(#fground)"/>
+
+  <!-- Path / trail -->
+  <polygon points="480,800 540,800 680,400 620,400" fill="url(#path)" opacity="0.9"/>
+  <polygon points="500,800 530,800 665,400 638,400" fill="#c09a60" opacity="0.4"/>
+
+  <!-- Fallen leaves on path -->
+  <g fill="#8a5a20" opacity="0.5">
+    <ellipse cx="520" cy="780" rx="12" ry="5"/>
+    <ellipse cx="545" cy="750" rx="10" ry="4"/>
+    <ellipse cx="580" cy="700" rx="11" ry="4.5"/>
+    <ellipse cx="610" cy="660" rx="9"  ry="3.5"/>
+    <ellipse cx="630" cy="620" rx="10" ry="4"/>
+  </g>
+
+  <!-- Ferns / undergrowth -->
+  <g fill="#143010" opacity="0.9">
+    <ellipse cx="450" cy="700" rx="60" ry="25"/>
+    <ellipse cx="420" cy="720" rx="50" ry="18"/>
+    <ellipse cx="760" cy="690" rx="65" ry="22"/>
+    <ellipse cx="790" cy="715" rx="50" ry="18"/>
+    <ellipse cx="150" cy="740" rx="80" ry="28"/>
+    <ellipse cx="1050" cy="730" rx="75" ry="26"/>
+  </g>
+
+  <!-- Distant glow at the end of the path -->
+  <ellipse cx="650" cy="400" rx="90" ry="70" fill="#a0e060" opacity="0.08"/>
+  <ellipse cx="650" cy="390" rx="50" ry="40" fill="#c0f080" opacity="0.12"/>
+
+  <!-- Label -->
+  <rect x="0" y="745" width="1200" height="55" fill="rgba(0,0,0,0.5)"/>
+  <text x="24" y="780" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#90e860">Forest Path</text>
+  <text x="24" y="798" font-family="system-ui,sans-serif" font-size="14" fill="#60a840">Nature &bull; Served via CloudFront + S3</text>
+</svg>

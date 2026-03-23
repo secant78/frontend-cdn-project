@@ -1,0 +1,201 @@
+name: "02 · Deploy Application"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend-cdn-project/app/**"
+      - ".github/workflows/02-deploy-application.yml"
+  workflow_dispatch:
+    inputs:
+      env_name:
+        description: "Environment name"
+        required: false
+        default: "production"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ENV_NAME: ${{ github.event.inputs.env_name || 'production' }}
+  NODE_VERSION: "18"
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  # ── Job 1: Build & lint the Node.js app ─────────────────────────────────
+  build:
+    name: Build & Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-cdn-project/app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend-cdn-project/app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --omit=dev
+
+      - name: Verify server starts
+        run: |
+          timeout 10 node server.js &
+          sleep 3
+          curl --fail http://localhost:8080/health || exit 1
+          kill %1 || true
+
+      - name: Archive app bundle
+        run: |
+          # Zip everything except node_modules; CI will npm install on EB
+          zip -r ../app-bundle.zip . --exclude="node_modules/*" --exclude=".git/*"
+          echo "Bundle size: $(du -sh ../app-bundle.zip | cut -f1)"
+
+      - name: Upload bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-bundle
+          path: frontend-cdn-project/app-bundle.zip
+          retention-days: 5
+
+  # ── Job 2: Sync static assets to S3 + invalidate CloudFront ────────────
+  deploy-assets:
+    name: Sync Static Assets → S3 + CF Invalidation
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: frontend-cdn-assets-deploy
+
+      - name: Sync CSS/JS assets to S3
+        run: |
+          aws s3 sync \
+            frontend-cdn-project/app/public/ \
+            s3://frontend-cdn-static-assets-${{ env.ENV_NAME }}/ \
+            --cache-control "public, max-age=31536000, immutable" \
+            --delete \
+            --exclude "index.html"
+
+          # index.html gets a short TTL so it can be updated without cache busting
+          aws s3 cp \
+            frontend-cdn-project/app/public/index.html \
+            s3://frontend-cdn-static-assets-${{ env.ENV_NAME }}/index.html \
+            --cache-control "public, max-age=300"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          DIST_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+          if [ -n "$DIST_ID" ]; then
+            aws cloudfront create-invalidation \
+              --distribution-id "$DIST_ID" \
+              --paths "/public/*" "/assets/*" "/"
+            echo "CloudFront invalidation created for distribution: $DIST_ID"
+          else
+            echo "CLOUDFRONT_DISTRIBUTION_ID not set — skipping invalidation"
+          fi
+
+  # ── Job 3: Deploy app bundle to Elastic Beanstalk ───────────────────────
+  deploy-beanstalk:
+    name: Deploy → Elastic Beanstalk
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: frontend-cdn-eb-deploy
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install boto3
+        run: pip install boto3
+
+      - name: Download app bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: app-bundle
+          path: frontend-cdn-project/
+
+      - name: Deploy to Elastic Beanstalk
+        working-directory: frontend-cdn-project/infrastructure
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          VERSION_LABEL: "v${{ github.run_number }}-${{ github.sha }}"
+        run: |
+          python - <<'EOF'
+          import sys, os, boto3, datetime
+          sys.path.insert(0, ".")
+          from config import AWS_REGION, EB_APP_NAME, EB_ENV_NAME, S3_EB_DEPLOY_BUCKET
+
+          version_label = os.environ.get("VERSION_LABEL", f"v{datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S')}")
+          bundle_path   = "../app-bundle.zip"
+          s3_key        = f"eb-versions/{EB_APP_NAME}/{version_label}.zip"
+
+          s3 = boto3.client("s3", region_name=AWS_REGION)
+          eb = boto3.client("elasticbeanstalk", region_name=AWS_REGION)
+
+          print(f"Uploading bundle to s3://{S3_EB_DEPLOY_BUCKET}/{s3_key}")
+          with open(bundle_path, "rb") as f:
+              s3.put_object(Bucket=S3_EB_DEPLOY_BUCKET, Key=s3_key, Body=f)
+
+          print(f"Creating application version: {version_label}")
+          eb.create_application_version(
+              ApplicationName=EB_APP_NAME,
+              VersionLabel=version_label,
+              SourceBundle={"S3Bucket": S3_EB_DEPLOY_BUCKET, "S3Key": s3_key},
+              Process=True,
+          )
+
+          print(f"Deploying to environment: {EB_ENV_NAME}")
+          eb.update_environment(
+              ApplicationName=EB_APP_NAME,
+              EnvironmentName=EB_ENV_NAME,
+              VersionLabel=version_label,
+          )
+
+          print("Deployment triggered. Monitoring health...")
+          import time
+          for _ in range(30):
+              envs = eb.describe_environments(
+                  ApplicationName=EB_APP_NAME,
+                  EnvironmentNames=[EB_ENV_NAME],
+              )["Environments"]
+              if envs:
+                  status = envs[0]["Status"]
+                  health = envs[0].get("Health", "Grey")
+                  print(f"  Status={status}, Health={health}")
+                  if status == "Ready" and health in ("Green", "Ok"):
+                      print("Environment is Ready and healthy!")
+                      sys.exit(0)
+                  if status == "Ready" and health == "Red":
+                      print("Environment ready but unhealthy — deployment may have failed")
+                      sys.exit(1)
+              time.sleep(20)
+          print("Timed out waiting for Ready state")
+          sys.exit(1)
+          EOF

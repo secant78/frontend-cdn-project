@@ -1,0 +1,29 @@
+# Terraform state — never commit real state files
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+# Terraform plan output
+tfplan
+*.tfplan
+
+# Terraform working directory
+.terraform/
+
+# Crash log
+crash.log
+crash.*.log
+
+# Sensitive variable files
+*.tfvars
+!terraform.tfvars.example
+
+# Override files (local-only tweaks)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config
+.terraformrc
+terraform.rc

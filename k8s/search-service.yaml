@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-service
+  namespace: cruise-services
+  labels:
+    app: search-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: search-service
+  template:
+    metadata:
+      labels:
+        app: search-service
+    spec:
+      containers:
+        - name: search-service
+          image: YOUR_ECR_REPO/search-service:latest  # replace with your ECR URI
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3000"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+---
+# ClusterIP is correct here — the ALB LBC with target-type: ip bypasses NodePort
+# and routes directly to pod IPs
+apiVersion: v1
+kind: Service
+metadata:
+  name: search-service
+  namespace: cruise-services
+spec:
+  selector:
+    app: search-service
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: ClusterIP

@@ -1,0 +1,24 @@
+# Node
+app/node_modules/
+app/npm-debug.log*
+app/.npm
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Build artifacts
+app-bundle.zip
+deployment_output.json
+
+# Local env overrides
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db

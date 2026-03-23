@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudEdge — CloudFront + Elastic Beanstalk + WAF</title>
+  <link rel="stylesheet" href="/public/css/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">&#9729;</span>
+        <span class="logo-text">CloudEdge</span>
+      </div>
+      <nav class="nav">
+        <a href="/media" class="nav-media-link">&#127916; Media Gallery</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#security">Security</a>
+        <a href="#metrics">Metrics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Edge-Cached Frontend<br />with AWS CloudFront</h1>
+        <p class="hero-sub">
+          Hosted on Elastic Beanstalk &bull; Secured by WAF &bull; Static assets on S3
+        </p>
+        <div class="hero-badges">
+          <span class="badge badge-green">CloudFront CDN</span>
+          <span class="badge badge-blue">Elastic Beanstalk</span>
+          <span class="badge badge-orange">WAF Protected</span>
+          <span class="badge badge-purple">S3 Static Assets</span>
+        </div>
+        <div class="hero-cta">
+          <a href="/media" class="cta-btn">View Media Gallery &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture -->
+    <section class="section" id="architecture">
+      <h2>Architecture Overview</h2>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-icon">&#127760;</div>
+          <h3>CloudFront CDN</h3>
+          <p>Global edge network with 400+ PoPs. Caches static assets at the edge, routes dynamic requests to Elastic Beanstalk origin.</p>
+          <ul>
+            <li>Cache behavior: <code>/assets/*</code> &rarr; S3</li>
+            <li>Cache behavior: <code>/*</code> &rarr; EB origin</li>
+            <li>HTTPS enforced (redirect HTTP)</li>
+          </ul>
+        </div>
+        <div class="arch-card">
+          <div class="arch-icon">&#9881;</div>
+          <h3>Elastic Beanstalk</h3>
+          <p>Managed Node.js platform with auto-scaling EC2 instances behind an Application Load Balancer.</p>
+          <ul>
+            <li>Node.js 18 runtime</li>
+            <li>ALB with health checks on <code>/health</code></li>
+            <li>Auto-scaling: 1&ndash;4 instances</li>
+          </ul>
+        </div>
+        <div class="arch-card">
+          <div class="arch-icon">&#128274;</div>
+          <h3>WAF (Web ACL)</h3>
+          <p>AWS-managed rule groups attached to CloudFront. Blocks OWASP Top 10 attacks before traffic ever reaches the origin.</p>
+          <ul>
+            <li>AWSManagedRulesCommonRuleSet</li>
+            <li>AWSManagedRulesKnownBadInputsRuleSet</li>
+            <li>Rate limiting: 2,000 req / 5 min</li>
+          </ul>
+        </div>
+        <div class="arch-card">
+          <div class="arch-icon">&#128190;</div>
+          <h3>S3 Static Assets</h3>
+          <p>Private S3 bucket serving CSS, JS, images. Only accessible through CloudFront via Origin Access Control (OAC).</p>
+          <ul>
+            <li>OAC — no public bucket access</li>
+            <li>Versioned bucket for rollbacks</li>
+            <li>Cache-Control: 1-year TTL</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security -->
+    <section class="section section-dark" id="security">
+      <h2>Security Layers</h2>
+      <div class="security-grid">
+        <div class="sec-item">
+          <span class="sec-badge">WAF</span>
+          <strong>SQL Injection Protection</strong>
+          <span>AWSManagedRulesSQLiRuleSet blocks malicious queries at the edge</span>
+        </div>
+        <div class="sec-item">
+          <span class="sec-badge">WAF</span>
+          <strong>XSS Protection</strong>
+          <span>CommonRuleSet filters cross-site scripting payloads</span>
+        </div>
+        <div class="sec-item">
+          <span class="sec-badge">WAF</span>
+          <strong>Rate Limiting</strong>
+          <span>IP-based rate limiting prevents brute-force and DDoS</span>
+        </div>
+        <div class="sec-item">
+          <span class="sec-badge">WAF</span>
+          <strong>IP Reputation</strong>
+          <span>AmazonIpReputationList blocks known bad actors automatically</span>
+        </div>
+        <div class="sec-item">
+          <span class="sec-badge">CF</span>
+          <strong>HTTPS Enforced</strong>
+          <span>All HTTP traffic redirected to HTTPS at the CloudFront edge</span>
+        </div>
+        <div class="sec-item">
+          <span class="sec-badge">S3</span>
+          <strong>Origin Access Control</strong>
+          <span>S3 bucket is private; only CloudFront service principal has read access</span>
+        </div>
+        <div class="sec-item">
+          <span class="sec-badge">EB</span>
+          <strong>Security Groups</strong>
+          <span>EC2 instances only accept traffic from the CloudFront managed prefix list</span>
+        </div>
+        <div class="sec-item">
+          <span class="sec-badge">EB</span>
+          <strong>Helmet.js Headers</strong>
+          <span>CSP, HSTS, X-Frame-Options, and other security headers set at the app layer</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Info -->
+    <section class="section" id="metrics">
+      <h2>Request Metadata</h2>
+      <p class="section-sub">Live data from your current request, showing CloudFront headers passed to the origin.</p>
+      <div id="info-box" class="info-box">
+        <div class="info-loading">Loading request info...</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      Frontend hosted on <strong>AWS Elastic Beanstalk</strong> &bull;
+      Edge-cached via <strong>CloudFront</strong> &bull;
+      Protected by <strong>WAF</strong> &bull;
+      Static assets on <strong>S3</strong>
+    </p>
+  </footer>
+
+  <script src="/public/js/app.js"></script>
+</body>
+</html>

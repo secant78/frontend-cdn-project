@@ -1,0 +1,150 @@
+name: "03 · Validate Security & Health"
+
+on:
+  workflow_run:
+    workflows: ["02 · Deploy Application"]
+    types: [completed]
+  schedule:
+    # Run security checks daily at 06:00 UTC
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  validate:
+    name: Security & Health Checks
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: frontend-cdn-validate
+
+      # ── CloudFront health check ────────────────────────────────────────
+      - name: CloudFront health check
+        run: |
+          CF_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}"
+          if [ -z "$CF_DOMAIN" ]; then
+            echo "CLOUDFRONT_DOMAIN secret not set — skipping CloudFront health check"
+            exit 0
+          fi
+          echo "Checking https://${CF_DOMAIN}/health"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "https://${CF_DOMAIN}/health")
+          if [ "$HTTP_CODE" == "200" ]; then
+            echo "Health check passed (HTTP $HTTP_CODE)"
+          else
+            echo "Health check FAILED (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+      # ── HTTPS redirect check ───────────────────────────────────────────
+      - name: Verify HTTP → HTTPS redirect
+        run: |
+          CF_DOMAIN="${{ secrets.CLOUDFRONT_DOMAIN }}"
+          if [ -z "$CF_DOMAIN" ]; then
+            echo "Skipping HTTPS redirect check"
+            exit 0
+          fi
+          REDIRECT=$(curl -s -o /dev/null -w "%{redirect_url}" --max-time 10 "http://${CF_DOMAIN}/")
+          if [[ "$REDIRECT" == https://* ]]; then
+            echo "HTTP → HTTPS redirect working: $REDIRECT"
+          else
+            echo "HTTP → HTTPS redirect NOT working. Got: $REDIRECT"
+            exit 1
+          fi
+
+      # ── WAF Web ACL check ──────────────────────────────────────────────
+      - name: Verify WAF Web ACL is active
+        run: |
+          python3 - <<'EOF'
+          import boto3, sys
+
+          waf = boto3.client("wafv2", region_name="us-east-1")
+          acls = waf.list_web_acls(Scope="CLOUDFRONT").get("WebACLs", [])
+          project_acls = [a for a in acls if "frontend-cdn" in a["Name"]]
+
+          if not project_acls:
+              print("ERROR: No WAF Web ACL found for frontend-cdn project")
+              sys.exit(1)
+
+          for acl in project_acls:
+              print(f"WAF Web ACL active: {acl['Name']} ({acl['ARN']})")
+
+          print("WAF check passed.")
+          EOF
+
+      # ── S3 public access check ─────────────────────────────────────────
+      - name: Verify S3 bucket is not public
+        run: |
+          python3 - <<'EOF'
+          import boto3, sys
+
+          s3 = boto3.client("s3")
+          bucket = "frontend-cdn-static-assets-production"
+
+          try:
+              pab = s3.get_public_access_block(Bucket=bucket)["PublicAccessBlockConfiguration"]
+              all_blocked = all([
+                  pab.get("BlockPublicAcls"),
+                  pab.get("IgnorePublicAcls"),
+                  pab.get("BlockPublicPolicy"),
+                  pab.get("RestrictPublicBuckets"),
+              ])
+              if all_blocked:
+                  print(f"S3 bucket '{bucket}' — all public access blocked. OK")
+              else:
+                  print(f"ERROR: S3 bucket '{bucket}' has public access enabled!")
+                  sys.exit(1)
+          except Exception as e:
+              print(f"Could not check bucket: {e}")
+              sys.exit(1)
+          EOF
+
+      # ── EB environment health ──────────────────────────────────────────
+      - name: Check Elastic Beanstalk environment health
+        run: |
+          python3 - <<'EOF'
+          import boto3, sys
+
+          eb = boto3.client("elasticbeanstalk", region_name="us-east-1")
+          envs = eb.describe_environments(
+              ApplicationName="frontend-cdn-app-production",
+              EnvironmentNames=["frontend-cdn-env-production"],
+              IncludeDeleted=False,
+          )["Environments"]
+
+          if not envs:
+              print("No EB environment found — skipping")
+              sys.exit(0)
+
+          env = envs[0]
+          print(f"EB Environment: {env['EnvironmentName']}")
+          print(f"  Status : {env['Status']}")
+          print(f"  Health : {env.get('Health', 'N/A')}")
+          print(f"  CNAME  : {env.get('CNAME', 'N/A')}")
+
+          if env.get("Health") == "Red":
+              print("ERROR: EB environment health is Red!")
+              sys.exit(1)
+          print("EB health check passed.")
+          EOF
+
+      - name: Security validation summary
+        run: |
+          echo "All security and health checks passed."

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="ocesky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0520"/>
+      <stop offset="30%" stop-color="#4a1060"/>
+      <stop offset="60%" stop-color="#c03020"/>
+      <stop offset="80%" stop-color="#e85020"/>
+      <stop offset="100%" stop-color="#f08030"/>
+    </linearGradient>
+    <linearGradient id="ocewater" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c84820"/>
+      <stop offset="40%" stop-color="#601040"/>
+      <stop offset="100%" stop-color="#100820"/>
+    </linearGradient>
+    <radialGradient id="sunsphere" cx="50%" cy="52%" r="10%">
+      <stop offset="0%" stop-color="#ffe060"/>
+      <stop offset="40%" stop-color="#ff8020"/>
+      <stop offset="100%" stop-color="#c03020" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="800" fill="url(#ocesky)"/>
+
+  <!-- Sun -->
+  <circle cx="600" cy="415" r="65" fill="#ffe060" opacity="0.95"/>
+  <circle cx="600" cy="415" r="55" fill="#ffee80"/>
+  <!-- Sun glow halo -->
+  <circle cx="600" cy="415" r="120" fill="url(#sunsphere)"/>
+
+  <!-- Horizon cloud streaks -->
+  <g opacity="0.35" fill="#ff6030">
+    <ellipse cx="200" cy="350" rx="180" ry="18"/>
+    <ellipse cx="1000" cy="370" rx="160" ry="14"/>
+    <ellipse cx="500" cy="330" rx="220" ry="12"/>
+    <ellipse cx="750" cy="345" rx="190" ry="10"/>
+    <ellipse cx="300" cy="310" rx="140" ry="8"/>
+    <ellipse cx="900" cy="325" rx="130" ry="9"/>
+  </g>
+  <g opacity="0.2" fill="#ffaa50">
+    <ellipse cx="150" cy="290" rx="200" ry="15"/>
+    <ellipse cx="900" cy="300" rx="180" ry="12"/>
+    <ellipse cx="600" cy="270" rx="250" ry="10"/>
+  </g>
+
+  <!-- Ocean -->
+  <rect x="0" y="410" width="1200" height="390" fill="url(#ocewater)"/>
+
+  <!-- Sun reflection column on water -->
+  <polygon points="560,415 640,415 680,800 520,800" fill="#ff9040" opacity="0.5"/>
+  <polygon points="580,415 620,415 650,800 550,800" fill="#ffcc60" opacity="0.4"/>
+  <polygon points="590,415 610,415 625,800 575,800" fill="#fff080" opacity="0.3"/>
+
+  <!-- Ocean waves / ripples -->
+  <g stroke="#ff6028" stroke-width="1.5" fill="none" opacity="0.35">
+    <path d="M 0 460 Q 150 445 300 460 Q 450 475 600 460 Q 750 445 900 460 Q 1050 475 1200 460"/>
+    <path d="M 0 490 Q 200 478 400 490 Q 600 502 800 490 Q 1000 478 1200 490"/>
+    <path d="M 0 520 Q 180 510 360 520 Q 540 530 720 520 Q 900 510 1080 520 Q 1140 525 1200 522"/>
+    <path d="M 0 555 Q 200 547 400 555 Q 600 563 800 555 Q 1000 547 1200 555"/>
+    <path d="M 0 595 Q 160 588 320 595 Q 480 602 640 595 Q 800 588 960 595 Q 1080 600 1200 595"/>
+    <path d="M 0 640 Q 200 633 400 640 Q 600 647 800 640 Q 1000 633 1200 640"/>
+    <path d="M 0 690 Q 180 684 360 690 Q 540 696 720 690 Q 900 684 1080 690 Q 1140 692 1200 690"/>
+    <path d="M 0 745 Q 200 740 400 745 Q 600 750 800 745 Q 1000 740 1200 745"/>
+  </g>
+
+  <!-- Shore silhouette -->
+  <path d="M 0 790 Q 100 760 250 780 Q 400 800 550 770 Q 700 755 850 775 Q 1000 790 1150 770 L 1200 780 L 1200 800 L 0 800 Z" fill="#0a0510" opacity="0.9"/>
+
+  <!-- Palm tree left -->
+  <rect x="90" y="480" width="10" height="240" fill="#2a1a08" transform="rotate(-6,95,720)"/>
+  <g fill="#1a3010" transform="translate(95,488) rotate(-6,0,0)">
+    <ellipse cx="0"   cy="0" rx="70" ry="18" transform="rotate(-30)"/>
+    <ellipse cx="0"   cy="0" rx="68" ry="16" transform="rotate(20)"/>
+    <ellipse cx="0"   cy="0" rx="65" ry="15" transform="rotate(70)"/>
+    <ellipse cx="0"   cy="0" rx="60" ry="14" transform="rotate(120)"/>
+    <ellipse cx="0"   cy="0" rx="55" ry="13" transform="rotate(-80)"/>
+  </g>
+
+  <!-- Palm tree right -->
+  <rect x="1095" y="470" width="10" height="250" fill="#2a1a08" transform="rotate(5,1100,720)"/>
+  <g fill="#1a3010" transform="translate(1100,478) rotate(5,0,0)">
+    <ellipse cx="0" cy="0" rx="70" ry="18" transform="rotate(-30)"/>
+    <ellipse cx="0" cy="0" rx="68" ry="16" transform="rotate(20)"/>
+    <ellipse cx="0" cy="0" rx="65" ry="15" transform="rotate(70)"/>
+    <ellipse cx="0" cy="0" rx="60" ry="14" transform="rotate(120)"/>
+    <ellipse cx="0" cy="0" rx="55" ry="13" transform="rotate(-80)"/>
+  </g>
+
+  <!-- Stars visible near top -->
+  <g fill="#fff" opacity="0.6">
+    <circle cx="80"  cy="50" r="1.5"/><circle cx="200" cy="30" r="1"/>
+    <circle cx="350" cy="60" r="1.5"/><circle cx="150" cy="80" r="1"/>
+    <circle cx="1050" cy="40" r="1.5"/><circle cx="1150" cy="65" r="1"/>
+    <circle cx="950"  cy="55" r="1.5"/>
+  </g>
+
+  <!-- Label -->
+  <rect x="0" y="745" width="1200" height="55" fill="rgba(0,0,0,0.45)"/>
+  <text x="24" y="780" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#ffcc80">Ocean Sunset</text>
+  <text x="24" y="798" font-family="system-ui,sans-serif" font-size="14" fill="#c08050">Nature &bull; Served via CloudFront + S3</text>
+</svg>

@@ -1,0 +1,41 @@
+# After applying this, the AWS Load Balancer Controller provisions an internet-facing ALB.
+# Once the ALB is ready, get its DNS name with:
+#   kubectl get ingress cruise-api-ingress -n cruise-services
+# Then set eks_alb_dns in Terraform and re-apply to wire up CloudFront.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cruise-api-ingress
+  namespace: cruise-services
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip        # routes directly to pod IPs — requires ClusterIP services
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/group.name: cruise-api  # groups all services under one ALB
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api/search
+            pathType: Prefix
+            backend:
+              service:
+                name: search-service
+                port:
+                  number: 80
+          - path: /api/bookings
+            pathType: Prefix
+            backend:
+              service:
+                name: booking-service
+                port:
+                  number: 80
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 80
