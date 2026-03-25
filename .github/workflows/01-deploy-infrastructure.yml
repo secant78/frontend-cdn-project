@@ -64,9 +64,19 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
+          set -o pipefail
+
+          # Pass acm_cert_arn only when provided; otherwise let the null default apply
+          ACM_ARN="${{ github.event.inputs.acm_cert_arn }}"
+          if [ -n "$ACM_ARN" ]; then
+            CERT_VAR="-var=acm_cert_arn=${ACM_ARN}"
+          else
+            CERT_VAR=""
+          fi
+
           terraform plan \
             -var="env_name=${{ github.event.inputs.env_name || 'production' }}" \
-            -var="acm_cert_arn=${{ github.event.inputs.acm_cert_arn }}" \
+            $CERT_VAR \
             -out=tfplan \
             -no-color 2>&1 | tee plan_output.txt
 
