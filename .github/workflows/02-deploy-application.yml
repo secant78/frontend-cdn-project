@@ -85,7 +85,7 @@ jobs:
       - name: Sync CSS/JS assets to S3
         run: |
           aws s3 sync \
-            frontend-cdn-project/app/public/ \
+            app/public/ \
             s3://frontend-cdn-static-assets-${{ env.ENV_NAME }}/ \
             --cache-control "public, max-age=31536000, immutable" \
             --delete \
@@ -93,7 +93,7 @@ jobs:
 
           # index.html gets a short TTL so it can be updated without cache busting
           aws s3 cp \
-            frontend-cdn-project/app/public/index.html \
+            app/public/index.html \
             s3://frontend-cdn-static-assets-${{ env.ENV_NAME }}/index.html \
             --cache-control "public, max-age=300"
 
