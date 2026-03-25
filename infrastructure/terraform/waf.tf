@@ -2,7 +2,7 @@
 resource "aws_wafv2_web_acl" "main" {
   provider    = aws.us_east_1
   name        = "${var.project_name}-webacl-${var.env_name}"
-  description = "WAF Web ACL for ${var.project_name} CloudFront distribution (${var.env_name})"
+  description = "WAF Web ACL for ${var.project_name} CloudFront distribution - ${var.env_name}"
   scope       = "CLOUDFRONT"
 
   default_action {

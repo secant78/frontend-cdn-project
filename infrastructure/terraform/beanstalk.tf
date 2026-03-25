@@ -163,9 +163,4 @@ resource "aws_elastic_beanstalk_environment" "main" {
     value     = "nginx"
   }
 
-  setting {
-    namespace = "aws:elasticbeanstalk:container:nodejs:staticfiles"
-    name      = "/public"
-    value     = "public/"
-  }
 }
