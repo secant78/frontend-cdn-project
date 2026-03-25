@@ -34,6 +34,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "static_assets" {
   rule {
     id     = "expire-noncurrent-versions"
     status = "Enabled"
+    filter {}
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
@@ -41,6 +42,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "static_assets" {
   rule {
     id     = "abort-incomplete-multipart"
     status = "Enabled"
+    filter {}
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
     }
@@ -119,6 +121,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "eb_deployments" {
   rule {
     id     = "expire-noncurrent-versions"
     status = "Enabled"
+    filter {}
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
@@ -126,6 +129,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "eb_deployments" {
   rule {
     id     = "abort-incomplete-multipart"
     status = "Enabled"
+    filter {}
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
     }
