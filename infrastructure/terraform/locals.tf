@@ -1,6 +1,6 @@
 locals {
   static_assets_bucket  = "${var.project_name}-static-assets-${var.env_name}"
-  eb_deployments_bucket = "${var.project_name}-eb-deployments-${var.env_name}"
+  eb_deployments_bucket = "elasticbeanstalk-${var.project_name}-${var.env_name}"
   eks_cluster_name      = "${var.project_name}-eks-${var.env_name}"
 
   common_tags = {
