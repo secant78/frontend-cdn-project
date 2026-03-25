@@ -123,19 +123,6 @@ resource "aws_elastic_beanstalk_environment" "main" {
     value     = tostring(var.eb_max_instances)
   }
 
-  # ── Node.js runtime ───────────────────────────────────────────────────────
-  setting {
-    namespace = "aws:elasticbeanstalk:container:nodejs"
-    name      = "NodeCommand"
-    value     = "npm start"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:container:nodejs"
-    name      = "NodeVersion"
-    value     = "20"
-  }
-
   # ── Application environment variables ─────────────────────────────────────
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
