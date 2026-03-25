@@ -92,8 +92,9 @@ resource "aws_s3_bucket_policy" "static_assets" {
 # ─── Elastic Beanstalk Deployments Bucket ────────────────────────────────────
 
 resource "aws_s3_bucket" "eb_deployments" {
-  bucket = local.eb_deployments_bucket
-  tags   = local.common_tags
+  bucket        = local.eb_deployments_bucket
+  force_destroy = true
+  tags          = local.common_tags
 }
 
 resource "aws_s3_bucket_versioning" "eb_deployments" {
