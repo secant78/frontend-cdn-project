@@ -84,6 +84,31 @@ resource "aws_elastic_beanstalk_environment" "main" {
   tier                = "WebServer"
   tags                = local.common_tags
 
+  # ── VPC & Subnets ─────────────────────────────────────────────────────────
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = aws_vpc.main.id
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = "${aws_subnet.public_1.id},${aws_subnet.public_2.id}"
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = "${aws_subnet.public_1.id},${aws_subnet.public_2.id}"
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = "public"
+  }
+
   # ── Environment type ──────────────────────────────────────────────────────
   setting {
     namespace = "aws:elasticbeanstalk:environment"
