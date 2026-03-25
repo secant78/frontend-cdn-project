@@ -1,7 +1,7 @@
-# Resolve the latest Node.js 22 solution stack at apply time
+# Resolve the latest Node.js 20 solution stack at apply time
 data "aws_elastic_beanstalk_solution_stack" "nodejs18" {
   most_recent = true
-  name_regex  = "^64bit Amazon Linux 2023 .* running Node.js 22.*"
+  name_regex  = "^64bit Amazon Linux 2023 .* running Node.js 20.*"
 }
 
 # ─── IAM: EC2 Instance Profile ───────────────────────────────────────────────
@@ -133,7 +133,7 @@ resource "aws_elastic_beanstalk_environment" "main" {
   setting {
     namespace = "aws:elasticbeanstalk:container:nodejs"
     name      = "NodeVersion"
-    value     = "22"
+    value     = "20"
   }
 
   # ── Application environment variables ─────────────────────────────────────
