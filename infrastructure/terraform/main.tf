@@ -3,7 +3,7 @@ terraform {
 
   # Terraform Cloud — replace YOUR_ORG_NAME with your Terraform Cloud organization
   cloud {
-    organization = "YOUR_ORG_NAME"
+    organization = "sean-test"
     workspaces {
       name = "frontend-cdn-project"
     }
