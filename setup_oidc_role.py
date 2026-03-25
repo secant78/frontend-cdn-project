@@ -172,6 +172,22 @@ def build_permissions_policy():
                 ],
                 "Resource": "*",
             },
+            # ── CloudFormation (required by Elastic Beanstalk under the hood) ──
+            {
+                "Sid": "CloudFormation",
+                "Effect": "Allow",
+                "Action": [
+                    "cloudformation:GetTemplate",
+                    "cloudformation:DescribeStacks",
+                    "cloudformation:DescribeStackEvents",
+                    "cloudformation:DescribeStackResources",
+                    "cloudformation:DescribeStackResource",
+                    "cloudformation:ListStackResources",
+                    "cloudformation:GetStackPolicy",
+                    "cloudformation:ListStacks",
+                ],
+                "Resource": "*",
+            },
             # ── CloudFront ───────────────────────────────────────────────────
             {
                 "Sid": "CloudFront",
