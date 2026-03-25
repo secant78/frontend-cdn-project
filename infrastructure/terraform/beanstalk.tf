@@ -33,6 +33,30 @@ resource "aws_iam_role_policy_attachment" "eb_worker_tier" {
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
 }
 
+# Allow the EC2 instance to read the deployment bundle from our custom S3 bucket
+resource "aws_iam_role_policy" "eb_instance_s3" {
+  name = "eb-instance-s3-deployments"
+  role = aws_iam_role.eb_instance_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectAcl",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${local.eb_deployments_bucket}",
+          "arn:aws:s3:::${local.eb_deployments_bucket}/*"
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_instance_profile" "eb_instance_profile" {
   name = "${var.project_name}-eb-instance-profile-${var.env_name}"
   role = aws_iam_role.eb_instance_role.name
@@ -65,6 +89,12 @@ resource "aws_iam_role_policy_attachment" "eb_enhanced_health" {
 resource "aws_iam_role_policy_attachment" "eb_managed_updates" {
   role       = aws_iam_role.eb_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy"
+}
+
+# Full EB service role permissions (includes ec2:DescribeImages and other required actions)
+resource "aws_iam_role_policy_attachment" "eb_service" {
+  role       = aws_iam_role.eb_service_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk"
 }
 
 # ─── Elastic Beanstalk Application ───────────────────────────────────────────
