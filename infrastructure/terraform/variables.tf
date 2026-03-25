@@ -57,8 +57,8 @@ variable "eb_max_instances" {
   default     = 4
 
   validation {
-    condition     = var.eb_max_instances >= var.eb_min_instances
-    error_message = "eb_max_instances must be >= eb_min_instances."
+    condition     = var.eb_max_instances >= 1
+    error_message = "eb_max_instances must be at least 1."
   }
 }
 
@@ -161,7 +161,7 @@ variable "eks_node_max" {
   default     = 4
 
   validation {
-    condition     = var.eks_node_max >= var.eks_node_min
-    error_message = "eks_node_max must be >= eks_node_min."
+    condition     = var.eks_node_max >= 1
+    error_message = "eks_node_max must be at least 1."
   }
 }
