@@ -3,33 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Media Gallery — CloudEdge</title>
+  <title>Destination Gallery — Azure Voyages</title>
+  <meta name="description" content="Browse stunning photos and videos from Azure Voyages destinations — Caribbean, Mediterranean, Alaska, Hawaii and more." />
   <link rel="stylesheet" href="/public/css/styles.css" />
   <link rel="stylesheet" href="/public/css/media.css" />
 </head>
 <body>
 
-  <!-- ── Header ─────────────────────────────────────────────────────────── -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo">
-        <span class="logo-icon">&#9729;</span>
-        <span class="logo-text">CloudEdge</span>
+  <!-- ── Navigation ─────────────────────────────────────────────────────── -->
+  <nav class="nav-wrapper" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-icon">⚓</span>
+        <span class="nav-logo-text">Azure <span>Voyages</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/cruises">Cruises</a>
+        <a href="/destinations">Destinations</a>
+        <a href="/#excursions">Excursions</a>
+        <a href="/#rewards">Rewards</a>
       </div>
-      <nav class="nav">
-        <a href="/">Home</a>
-        <a href="/media" class="nav-active">Media Gallery</a>
-        <a href="/#architecture">Architecture</a>
-        <a href="/#security">Security</a>
-      </nav>
+
+      <div class="nav-actions">
+        <button class="nav-signin">Sign In</button>
+        <a href="/cruises" class="nav-book">Book Now</a>
+      </div>
+
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </header>
+  </nav>
+
+  <!-- Mobile Drawer -->
+  <div class="nav-mobile-drawer" id="nav-mobile-drawer">
+    <a href="/cruises">Cruises</a>
+    <a href="/destinations">Destinations</a>
+    <a href="/#excursions">Excursions</a>
+    <a href="/#rewards">Rewards</a>
+    <div class="nav-mobile-actions">
+      <button class="nav-signin">Sign In</button>
+      <a href="/cruises" class="nav-book">Book Now</a>
+    </div>
+  </div>
 
   <!-- ── Page Hero ───────────────────────────────────────────────────────── -->
   <section class="media-hero">
     <div class="media-hero-content">
-      <h1>Media Gallery</h1>
-      <p>Photos and videos hosted on <strong>Elastic Beanstalk</strong>, edge-cached via <strong>CloudFront</strong>, with assets stored in <strong>S3</strong>.</p>
+      <h1>Destination Gallery — Azure Voyages</h1>
+      <p>Thousands of photos and videos from real voyagers. Explore our destinations before you sail.</p>
     </div>
   </section>
 
@@ -45,7 +68,7 @@
       </div>
 
       <!-- Item count -->
-      <span class="gallery-count" id="gallery-count">Loading…</span>
+      <span class="gallery-count" id="gallery-count">Loading&hellip;</span>
 
     </div>
   </div>
@@ -64,7 +87,7 @@
 
     <!-- Empty state -->
     <div class="gallery-empty hidden" id="gallery-empty">
-      <span>&#128443;</span>
+      <span>📷</span>
       <p>No media found for this filter.</p>
     </div>
   </main>
@@ -105,14 +128,71 @@
     </div>
   </div>
 
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
   <footer class="footer">
-    <p>
-      Media served from <strong>S3</strong> via <strong>CloudFront</strong> &bull;
-      App hosted on <strong>Elastic Beanstalk</strong> &bull;
-      Protected by <strong>WAF</strong>
-    </p>
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <span class="nav-logo-icon">⚓</span>
+            <span class="nav-logo-text">Azure <span>Voyages</span></span>
+          </a>
+          <p class="footer-tagline">
+            Setting sail to the world's most breathtaking destinations since 1985.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/cruises">All Cruises</a></li>
+            <li><a href="/destinations">Destinations</a></li>
+            <li><a href="/#excursions">Excursions</a></li>
+            <li><a href="/#rewards">Loyalty Programme</a></li>
+            <li><a href="/">Home</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Booking Policy</a></li>
+            <li><a href="#">Travel Insurance</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="footer-contact-item">
+            <span class="icon">✉️</span>
+            <span>voyages@azure-voyages.com</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📞</span>
+            <span>1-800-AZURE-VG</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📍</span>
+            <span>1 Harbor Drive, Miami, FL 33132</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          &copy; 2026 Azure Voyages. All rights reserved. &mdash;
+          Media served from <strong>S3</strong> via <strong>CloudFront</strong>
+        </div>
+        <div class="footer-powered">Powered by <strong>AWS EKS + Elastic Beanstalk</strong></div>
+      </div>
+    </div>
   </footer>
 
+  <script src="/public/js/app.js"></script>
   <script src="/public/js/media.js"></script>
 </body>
 </html>

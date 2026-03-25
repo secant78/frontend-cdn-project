@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Destinations — Azure Voyages</title>
+  <meta name="description" content="Explore cruise destinations with Azure Voyages — Caribbean, Mediterranean, Alaska, Hawaii, Bahamas and Northern Europe." />
+  <link rel="stylesheet" href="/public/css/styles.css" />
+  <link rel="stylesheet" href="/public/css/cruises.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════════════ -->
+  <nav class="nav-wrapper" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-icon">⚓</span>
+        <span class="nav-logo-text">Azure <span>Voyages</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/cruises">Cruises</a>
+        <a href="/destinations" class="active">Destinations</a>
+        <a href="/#excursions">Excursions</a>
+        <a href="/#rewards">Rewards</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="nav-signin">Sign In</button>
+        <a href="/cruises" class="nav-book">Book Now</a>
+      </div>
+
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer -->
+  <div class="nav-mobile-drawer" id="nav-mobile-drawer">
+    <a href="/cruises">Cruises</a>
+    <a href="/destinations" class="active">Destinations</a>
+    <a href="/#excursions">Excursions</a>
+    <a href="/#rewards">Rewards</a>
+    <div class="nav-mobile-actions">
+      <button class="nav-signin">Sign In</button>
+      <a href="/cruises" class="nav-book">Book Now</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       PAGE HERO
+  ═══════════════════════════════════════════════════════ -->
+  <section class="page-hero page-hero-dark">
+    <div class="hero-eyebrow" style="margin-bottom:20px;">🌍 Around the World with Azure</div>
+    <h1>Explore Destinations</h1>
+    <p>Six iconic sailing regions, each offering a completely unique world of discovery and wonder</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       DESTINATIONS GRID
+  ═══════════════════════════════════════════════════════ -->
+  <div class="destinations-page">
+
+    <!-- Loading state -->
+    <div class="loading-spinner" id="destinations-loading">
+      <div class="spinner"></div>
+      <span>Loading destinations&hellip;</span>
+    </div>
+
+    <!-- Grid (populated by JS) -->
+    <div class="destinations-page-grid hidden" id="destinations-grid">
+      <!-- Populated by app.js from /api/destinations -->
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state hidden" id="destinations-empty">
+      <span class="empty-state-icon">🗺️</span>
+      <h3>Could Not Load Destinations</h3>
+      <p>Please try refreshing the page.</p>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       NEWSLETTER
+  ═══════════════════════════════════════════════════════ -->
+  <section class="newsletter-section">
+    <div class="container">
+      <h2>Find Your Dream Destination</h2>
+      <p>Get personalised destination recommendations and exclusive deals delivered to your inbox</p>
+      <form class="newsletter-form" id="newsletter-form" novalidate>
+        <input
+          type="email"
+          class="newsletter-input"
+          id="newsletter-email"
+          placeholder="Your email address"
+          required
+          autocomplete="email"
+        />
+        <button type="submit" class="newsletter-submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <span class="nav-logo-icon">⚓</span>
+            <span class="nav-logo-text">Azure <span>Voyages</span></span>
+          </a>
+          <p class="footer-tagline">
+            Setting sail to the world's most breathtaking destinations since 1985.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/cruises">All Cruises</a></li>
+            <li><a href="/destinations">Destinations</a></li>
+            <li><a href="/#excursions">Excursions</a></li>
+            <li><a href="/#rewards">Loyalty Programme</a></li>
+            <li><a href="/">Home</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Booking Policy</a></li>
+            <li><a href="#">Travel Insurance</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="/media">Media Gallery</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="footer-contact-item">
+            <span class="icon">✉️</span>
+            <span>voyages@azure-voyages.com</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📞</span>
+            <span>1-800-AZURE-VG</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📍</span>
+            <span>1 Harbor Drive, Miami, FL 33132</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copyright">&copy; 2026 Azure Voyages. All rights reserved.</div>
+        <div class="footer-powered">Powered by <strong>AWS EKS &middot; Elastic Beanstalk &middot; CloudFront &middot; WAF</strong></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/public/js/app.js"></script>
+</body>
+</html>

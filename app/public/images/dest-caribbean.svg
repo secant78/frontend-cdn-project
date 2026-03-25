@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0077b6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00b4d8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#48cae4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="wave" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#023e8a;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#0077b6;stop-opacity:0.9" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)" />
+  <!-- Sun -->
+  <circle cx="650" cy="120" r="70" fill="#ffe066" opacity="0.35" />
+  <circle cx="650" cy="120" r="50" fill="#ffd700" opacity="0.5" />
+  <!-- Waves -->
+  <path d="M0 380 Q100 350 200 375 Q300 400 400 370 Q500 340 600 370 Q700 400 800 365 L800 500 L0 500 Z" fill="url(#wave)" />
+  <path d="M0 420 Q150 395 300 415 Q450 435 600 410 Q700 395 800 415 L800 500 L0 500 Z" fill="#023e8a" opacity="0.7" />
+  <!-- Palm silhouette -->
+  <line x1="120" y1="370" x2="130" y2="240" stroke="#1b4332" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="90" cy="250" rx="50" ry="18" fill="#2d6a4f" transform="rotate(-20 90 250)"/>
+  <ellipse cx="155" cy="245" rx="55" ry="16" fill="#40916c" transform="rotate(15 155 245)"/>
+  <ellipse cx="130" cy="235" rx="45" ry="14" fill="#52b788" transform="rotate(-5 130 235)"/>
+  <!-- Text -->
+  <text x="400" y="200" font-family="Georgia, serif" font-size="72" font-weight="bold" fill="white" text-anchor="middle" opacity="0.95" letter-spacing="2">Caribbean</text>
+  <text x="400" y="260" font-family="Georgia, serif" font-size="28" fill="white" text-anchor="middle" opacity="0.8">Sun, Sand &amp; Crystal Waters</text>
+</svg>

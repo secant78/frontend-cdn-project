@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00cec9;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00b4d8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#48cae4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shallow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7fdbff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#0077b6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="sand" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f9e4b7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4a574;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)" />
+  <!-- Sky glow -->
+  <ellipse cx="400" cy="0" rx="500" ry="200" fill="#e0f7fa" opacity="0.2"/>
+  <!-- Sun -->
+  <circle cx="100" cy="100" r="65" fill="#fffde7" opacity="0.3"/>
+  <circle cx="100" cy="100" r="45" fill="#ffd700" opacity="0.55"/>
+  <!-- Sandy beach strip -->
+  <path d="M0 340 Q200 310 400 335 Q600 360 800 330 L800 420 L0 420 Z" fill="url(#sand)" />
+  <!-- Shallow water -->
+  <path d="M0 380 Q150 355 300 375 Q450 398 600 370 Q700 355 800 375 L800 500 L0 500 Z" fill="url(#shallow)" />
+  <path d="M0 425 Q150 405 300 422 Q450 440 600 420 Q700 408 800 425 L800 500 L0 500 Z" fill="#0077b6" opacity="0.7" />
+  <!-- Palm tree left -->
+  <line x1="150" y1="340" x2="165" y2="210" stroke="#5c3d11" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="128" cy="218" rx="52" ry="17" fill="#27ae60" transform="rotate(-22 128 218)"/>
+  <ellipse cx="192" cy="212" rx="56" ry="15" fill="#2ecc71" transform="rotate(18 192 212)"/>
+  <ellipse cx="165" cy="204" rx="42" ry="13" fill="#1e8449" transform="rotate(-4 165 204)"/>
+  <!-- Palm tree right -->
+  <line x1="640" y1="335" x2="655" y2="215" stroke="#5c3d11" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="618" cy="223" rx="50" ry="17" fill="#27ae60" transform="rotate(-20 618 223)"/>
+  <ellipse cx="680" cy="218" rx="53" ry="15" fill="#2ecc71" transform="rotate(16 680 218)"/>
+  <ellipse cx="655" cy="208" rx="40" ry="13" fill="#1e8449" transform="rotate(-3 655 208)"/>
+  <!-- Text -->
+  <text x="400" y="200" font-family="Georgia, serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle" opacity="0.95" letter-spacing="2">Bahamas</text>
+  <text x="400" y="255" font-family="Georgia, serif" font-size="26" fill="white" text-anchor="middle" opacity="0.85">Island-Hop in Paradise</text>
+</svg>

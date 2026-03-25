@@ -3,156 +3,540 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudEdge — CloudFront + Elastic Beanstalk + WAF</title>
+  <title>Azure Voyages — Discover the World's Most Breathtaking Seas</title>
+  <meta name="description" content="Luxury cruise vacations to the Caribbean, Mediterranean, Alaska, Hawaii and beyond. Book your dream voyage with Azure Voyages." />
   <link rel="stylesheet" href="/public/css/styles.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo">
-        <span class="logo-icon">&#9729;</span>
-        <span class="logo-text">CloudEdge</span>
+
+  <!-- ══════════════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════════════ -->
+  <nav class="nav-wrapper" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-icon">⚓</span>
+        <span class="nav-logo-text">Azure <span>Voyages</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/cruises">Cruises</a>
+        <a href="/destinations">Destinations</a>
+        <a href="#excursions">Excursions</a>
+        <a href="#rewards">Rewards</a>
       </div>
-      <nav class="nav">
-        <a href="/media" class="nav-media-link">&#127916; Media Gallery</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#security">Security</a>
-        <a href="#metrics">Metrics</a>
-      </nav>
+
+      <div class="nav-actions">
+        <button class="nav-signin">Sign In</button>
+        <a href="/cruises" class="nav-book">Book Now</a>
+      </div>
+
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </header>
+  </nav>
 
-  <main>
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-content">
-        <h1>Edge-Cached Frontend<br />with AWS CloudFront</h1>
-        <p class="hero-sub">
-          Hosted on Elastic Beanstalk &bull; Secured by WAF &bull; Static assets on S3
-        </p>
-        <div class="hero-badges">
-          <span class="badge badge-green">CloudFront CDN</span>
-          <span class="badge badge-blue">Elastic Beanstalk</span>
-          <span class="badge badge-orange">WAF Protected</span>
-          <span class="badge badge-purple">S3 Static Assets</span>
+  <!-- Mobile Drawer -->
+  <div class="nav-mobile-drawer" id="nav-mobile-drawer">
+    <a href="/cruises">Cruises</a>
+    <a href="/destinations">Destinations</a>
+    <a href="#excursions">Excursions</a>
+    <a href="#rewards">Rewards</a>
+    <div class="nav-mobile-actions">
+      <button class="nav-signin">Sign In</button>
+      <a href="/cruises" class="nav-book">Book Now</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       HERO SECTION
+  ═══════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">⚓ Luxury Cruise Vacations Since 1985</div>
+      <h1>Discover the World's Most<br /><em>Breathtaking Seas</em></h1>
+      <p class="hero-subtitle">
+        From the turquoise waters of the Caribbean to the dramatic fjords of Norway —
+        your perfect voyage awaits.
+      </p>
+
+      <!-- Search Card -->
+      <div class="search-card">
+        <div class="search-card-title">🔍 Search Cruises</div>
+        <form class="search-form" id="hero-search-form" novalidate>
+          <div class="form-group">
+            <label for="dest-select">Destination</label>
+            <select id="dest-select" name="destination">
+              <option value="">All Destinations</option>
+              <option value="Caribbean">Caribbean</option>
+              <option value="Mediterranean">Mediterranean</option>
+              <option value="Alaska">Alaska</option>
+              <option value="Hawaii">Hawaii</option>
+              <option value="Bahamas">Bahamas</option>
+              <option value="Europe">Northern Europe</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="depart-date">Departure Date</label>
+            <input type="date" id="depart-date" name="departureDate" />
+          </div>
+          <div class="form-group">
+            <label for="return-date">Return Date</label>
+            <input type="date" id="return-date" name="returnDate" />
+          </div>
+          <div class="form-group">
+            <label for="guests-input">Guests</label>
+            <input type="number" id="guests-input" name="guests" min="1" max="10" value="2" />
+          </div>
+          <button type="submit" class="search-btn">
+            🔍 Search Cruises
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       FEATURED CRUISES
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="featured-cruises">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">⭐ Hand-Picked for You</span>
+        <h2>Featured Voyages</h2>
+        <p>Our most popular sailings, chosen by thousands of happy voyagers</p>
+      </div>
+
+      <div class="cruises-grid" id="featured-cruises-grid">
+        <!-- Populated by JS from /api/cruises -->
+        <div class="cruise-card" aria-hidden="true">
+          <div class="cruise-card-image">
+            <div class="cruise-card-image-placeholder skeleton" style="width:100%;height:100%;"></div>
+          </div>
+          <div class="cruise-card-body">
+            <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:22px;width:85%;margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:14px;width:70%;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:14px;width:50%;margin-bottom:14px;"></div>
+          </div>
         </div>
-        <div class="hero-cta">
-          <a href="/media" class="cta-btn">View Media Gallery &rarr;</a>
+        <div class="cruise-card" aria-hidden="true">
+          <div class="cruise-card-image">
+            <div class="cruise-card-image-placeholder skeleton" style="width:100%;height:100%;"></div>
+          </div>
+          <div class="cruise-card-body">
+            <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:22px;width:85%;margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:14px;width:70%;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:14px;width:50%;margin-bottom:14px;"></div>
+          </div>
+        </div>
+        <div class="cruise-card" aria-hidden="true">
+          <div class="cruise-card-image">
+            <div class="cruise-card-image-placeholder skeleton" style="width:100%;height:100%;"></div>
+          </div>
+          <div class="cruise-card-body">
+            <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:22px;width:85%;margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:14px;width:70%;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:14px;width:50%;margin-bottom:14px;"></div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- Architecture -->
-    <section class="section" id="architecture">
-      <h2>Architecture Overview</h2>
-      <div class="arch-grid">
-        <div class="arch-card">
-          <div class="arch-icon">&#127760;</div>
-          <h3>CloudFront CDN</h3>
-          <p>Global edge network with 400+ PoPs. Caches static assets at the edge, routes dynamic requests to Elastic Beanstalk origin.</p>
-          <ul>
-            <li>Cache behavior: <code>/assets/*</code> &rarr; S3</li>
-            <li>Cache behavior: <code>/*</code> &rarr; EB origin</li>
-            <li>HTTPS enforced (redirect HTTP)</li>
-          </ul>
+      <div style="text-align:center;margin-top:40px;">
+        <a href="/cruises" class="btn btn-outline btn-lg">View All Cruises &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       DESTINATIONS
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section section-bg-light" id="destinations">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">🌍 Where Will You Go?</span>
+        <h2>Explore Destinations</h2>
+        <p>Six iconic regions, each with its own magic waiting to be discovered</p>
+      </div>
+
+      <div class="destinations-grid">
+
+        <div class="destination-card">
+          <div class="destination-card-bg" style="background:linear-gradient(135deg,#0077b6,#00b4d8,#48cae4);"></div>
+          <div class="destination-card-overlay">
+            <div class="destination-card-name">Caribbean</div>
+            <div class="destination-card-count">12 cruises available</div>
+            <a href="/cruises?destination=Caribbean" class="destination-card-badge">Explore &rarr;</a>
+          </div>
         </div>
-        <div class="arch-card">
-          <div class="arch-icon">&#9881;</div>
-          <h3>Elastic Beanstalk</h3>
-          <p>Managed Node.js platform with auto-scaling EC2 instances behind an Application Load Balancer.</p>
-          <ul>
-            <li>Node.js 18 runtime</li>
-            <li>ALB with health checks on <code>/health</code></li>
-            <li>Auto-scaling: 1&ndash;4 instances</li>
-          </ul>
+
+        <div class="destination-card">
+          <div class="destination-card-bg" style="background:linear-gradient(135deg,#1a3a6b,#1a5276,#2471a3);"></div>
+          <div class="destination-card-overlay">
+            <div class="destination-card-name">Mediterranean</div>
+            <div class="destination-card-count">9 cruises available</div>
+            <a href="/cruises?destination=Mediterranean" class="destination-card-badge">Explore &rarr;</a>
+          </div>
         </div>
-        <div class="arch-card">
-          <div class="arch-icon">&#128274;</div>
-          <h3>WAF (Web ACL)</h3>
-          <p>AWS-managed rule groups attached to CloudFront. Blocks OWASP Top 10 attacks before traffic ever reaches the origin.</p>
-          <ul>
-            <li>AWSManagedRulesCommonRuleSet</li>
-            <li>AWSManagedRulesKnownBadInputsRuleSet</li>
-            <li>Rate limiting: 2,000 req / 5 min</li>
-          </ul>
+
+        <div class="destination-card">
+          <div class="destination-card-bg" style="background:linear-gradient(135deg,#1a4a3a,#1abc9c,#0d7a5f);"></div>
+          <div class="destination-card-overlay">
+            <div class="destination-card-name">Alaska</div>
+            <div class="destination-card-count">6 cruises available</div>
+            <a href="/cruises?destination=Alaska" class="destination-card-badge">Explore &rarr;</a>
+          </div>
         </div>
-        <div class="arch-card">
-          <div class="arch-icon">&#128190;</div>
-          <h3>S3 Static Assets</h3>
-          <p>Private S3 bucket serving CSS, JS, images. Only accessible through CloudFront via Origin Access Control (OAC).</p>
-          <ul>
-            <li>OAC — no public bucket access</li>
-            <li>Versioned bucket for rollbacks</li>
-            <li>Cache-Control: 1-year TTL</li>
-          </ul>
+
+        <div class="destination-card">
+          <div class="destination-card-bg" style="background:linear-gradient(135deg,#c0392b,#e67e22,#f39c12);"></div>
+          <div class="destination-card-overlay">
+            <div class="destination-card-name">Hawaii</div>
+            <div class="destination-card-count">5 cruises available</div>
+            <a href="/cruises?destination=Hawaii" class="destination-card-badge">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <div class="destination-card">
+          <div class="destination-card-bg" style="background:linear-gradient(135deg,#00cec9,#00b4d8,#48cae4);"></div>
+          <div class="destination-card-overlay">
+            <div class="destination-card-name">Bahamas</div>
+            <div class="destination-card-count">8 cruises available</div>
+            <a href="/cruises?destination=Bahamas" class="destination-card-badge">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <div class="destination-card">
+          <div class="destination-card-bg" style="background:linear-gradient(135deg,#2c1654,#6c5ce7,#a29bfe);"></div>
+          <div class="destination-card-overlay">
+            <div class="destination-card-name">Northern Europe</div>
+            <div class="destination-card-count">4 cruises available</div>
+            <a href="/cruises?destination=Europe" class="destination-card-badge">Explore &rarr;</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PLATFORM FEATURES / MICROSERVICES
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">🛳️ The Azure Voyages Platform</span>
+        <h2>Everything You Need for the Perfect Voyage</h2>
+        <p>Our end-to-end microservices platform handles every detail of your journey</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">🔍</span>
+          <div class="feature-name">Smart Search</div>
+          <div class="feature-desc">Real-time availability across 200+ sailings</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📅</span>
+          <div class="feature-name">Instant Booking</div>
+          <div class="feature-desc">Reserve your cabin in under 2 minutes</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💰</span>
+          <div class="feature-name">Best Price Promise</div>
+          <div class="feature-desc">Dynamic pricing with price-match guarantee</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">👤</span>
+          <div class="feature-name">My Account</div>
+          <div class="feature-desc">Manage bookings, preferences &amp; travel docs</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🗺️</span>
+          <div class="feature-name">Digital Itinerary</div>
+          <div class="feature-desc">Port-by-port schedules, live updates</div>
+        </div>
+        <div class="feature-card" id="excursions">
+          <span class="feature-icon">🏖️</span>
+          <div class="feature-name">Shore Excursions</div>
+          <div class="feature-desc">500+ curated activities at every port</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⭐</span>
+          <div class="feature-name">Verified Reviews</div>
+          <div class="feature-desc">Ratings from 50,000+ real voyagers</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔔</span>
+          <div class="feature-name">Trip Alerts</div>
+          <div class="feature-desc">SMS &amp; email notifications for your voyage</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📸</span>
+          <div class="feature-name">Destination Gallery</div>
+          <div class="feature-desc">Thousands of photos &amp; videos from real guests</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🏆</span>
+          <div class="feature-name">Voyager Rewards</div>
+          <div class="feature-desc">Earn points on every dollar, redeem for upgrades</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🌤️</span>
+          <div class="feature-name">Live Weather</div>
+          <div class="feature-desc">Real-time forecasts for all ports of call</div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Security -->
-    <section class="section section-dark" id="security">
-      <h2>Security Layers</h2>
-      <div class="security-grid">
-        <div class="sec-item">
-          <span class="sec-badge">WAF</span>
-          <strong>SQL Injection Protection</strong>
-          <span>AWSManagedRulesSQLiRuleSet blocks malicious queries at the edge</span>
-        </div>
-        <div class="sec-item">
-          <span class="sec-badge">WAF</span>
-          <strong>XSS Protection</strong>
-          <span>CommonRuleSet filters cross-site scripting payloads</span>
-        </div>
-        <div class="sec-item">
-          <span class="sec-badge">WAF</span>
-          <strong>Rate Limiting</strong>
-          <span>IP-based rate limiting prevents brute-force and DDoS</span>
-        </div>
-        <div class="sec-item">
-          <span class="sec-badge">WAF</span>
-          <strong>IP Reputation</strong>
-          <span>AmazonIpReputationList blocks known bad actors automatically</span>
-        </div>
-        <div class="sec-item">
-          <span class="sec-badge">CF</span>
-          <strong>HTTPS Enforced</strong>
-          <span>All HTTP traffic redirected to HTTPS at the CloudFront edge</span>
-        </div>
-        <div class="sec-item">
-          <span class="sec-badge">S3</span>
-          <strong>Origin Access Control</strong>
-          <span>S3 bucket is private; only CloudFront service principal has read access</span>
-        </div>
-        <div class="sec-item">
-          <span class="sec-badge">EB</span>
-          <strong>Security Groups</strong>
-          <span>EC2 instances only accept traffic from the CloudFront managed prefix list</span>
-        </div>
-        <div class="sec-item">
-          <span class="sec-badge">EB</span>
-          <strong>Helmet.js Headers</strong>
-          <span>CSP, HSTS, X-Frame-Options, and other security headers set at the app layer</span>
-        </div>
+  <!-- ══════════════════════════════════════════════════════
+       LOYALTY / REWARDS SECTION
+  ═══════════════════════════════════════════════════════ -->
+  <section class="loyalty-section" id="rewards">
+    <div class="container">
+      <div class="loyalty-header">
+        <span class="section-eyebrow">🏆 Loyalty Programme</span>
+        <h2>Join Voyager Rewards</h2>
+        <p>Earn points on every sailing and unlock exclusive perks, upgrades, and member-only experiences</p>
+        <a href="#" class="btn btn-gold btn-lg">Join Free Today</a>
       </div>
-    </section>
 
-    <!-- Live Info -->
-    <section class="section" id="metrics">
-      <h2>Request Metadata</h2>
-      <p class="section-sub">Live data from your current request, showing CloudFront headers passed to the origin.</p>
-      <div id="info-box" class="info-box">
-        <div class="info-loading">Loading request info...</div>
+      <div class="loyalty-tiers">
+
+        <!-- Explorer — Bronze -->
+        <div class="loyalty-tier">
+          <div class="tier-icon">🥉</div>
+          <div class="tier-name">Explorer</div>
+          <div class="tier-level bronze">Bronze Tier</div>
+          <div class="tier-pts">0 – 4,999 points per year</div>
+          <ul class="tier-perks">
+            <li class="tier-perk">1 point per $1 spent on sailings</li>
+            <li class="tier-perk">Priority boarding at select ports</li>
+            <li class="tier-perk">Welcome cocktail on embarkation day</li>
+            <li class="tier-perk">Members-only newsletter with exclusive deals</li>
+            <li class="tier-perk">Birthday discount: 10% off any booking</li>
+          </ul>
+          <a href="#" class="btn btn-outline-white btn-sm">Get Started</a>
+        </div>
+
+        <!-- Navigator — Silver -->
+        <div class="loyalty-tier featured">
+          <div class="tier-icon">🥈</div>
+          <div class="tier-name">Navigator</div>
+          <div class="tier-level silver">Silver Tier</div>
+          <div class="tier-pts">5,000 – 14,999 points per year</div>
+          <ul class="tier-perks">
+            <li class="tier-perk">1.5 points per $1 spent on sailings</li>
+            <li class="tier-perk">Free cabin upgrade when available</li>
+            <li class="tier-perk">Dedicated loyalty concierge line</li>
+            <li class="tier-perk">Complimentary specialty dining (once per voyage)</li>
+            <li class="tier-perk">Early access to new sailing announcements</li>
+            <li class="tier-perk">15% discount on shore excursions</li>
+          </ul>
+          <a href="#" class="btn btn-gold btn-sm">Most Popular</a>
+        </div>
+
+        <!-- Admiral — Gold -->
+        <div class="loyalty-tier">
+          <div class="tier-icon">🏆</div>
+          <div class="tier-name">Admiral</div>
+          <div class="tier-level gold">Gold Tier</div>
+          <div class="tier-pts">15,000+ points per year</div>
+          <ul class="tier-perks">
+            <li class="tier-perk">2 points per $1 spent on sailings</li>
+            <li class="tier-perk">Guaranteed cabin upgrade every voyage</li>
+            <li class="tier-perk">Exclusive Admiral's Lounge access</li>
+            <li class="tier-perk">Complimentary shore excursion per port</li>
+            <li class="tier-perk">Private captain's dinner invitation</li>
+            <li class="tier-perk">Free Wi-Fi on all sailings</li>
+            <li class="tier-perk">25% discount on all onboard purchases</li>
+          </ul>
+          <a href="#" class="btn btn-outline-white btn-sm">Learn More</a>
+        </div>
+
       </div>
-    </section>
-  </main>
 
+      <div class="loyalty-cta">
+        <a href="#" class="btn btn-gold btn-lg">Start Earning Points &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       TESTIMONIALS
+  ═══════════════════════════════════════════════════════ -->
+  <section class="section section-bg-light">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">💬 Guest Stories</span>
+        <h2>What Our Voyagers Say</h2>
+        <p>Over 50,000 verified reviews from real Azure Voyages guests</p>
+      </div>
+
+      <div class="testimonials-grid">
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">
+            "Absolutely the best vacation experience of my life. The Caribbean Paradise cruise
+            was pure magic — pristine waters, incredible service, and a stop at CocoCay that
+            I'll never forget. Already booked our second voyage!"
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SL</div>
+            <div>
+              <div class="testimonial-name">Sarah L.</div>
+              <div class="testimonial-cruise">Caribbean Paradise · Nassau, Bahamas</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">
+            "The Mediterranean Discovery exceeded every expectation. Waking up to the Santorini
+            caldera from our balcony cabin was breathtaking. The historian guides at every port
+            added a depth to the experience you simply can't get any other way."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MR</div>
+            <div>
+              <div class="testimonial-name">Michael R.</div>
+              <div class="testimonial-cruise">Mediterranean Discovery · Athens to Barcelona</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">
+            "Alaska from the water is a completely different world. Seeing a humpback whale
+            breach just 100 yards from the ship in Glacier Bay was incredible. The Azure
+            Explorer is a stunning ship — spotless, comfortable, and beautifully staffed."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JT</div>
+            <div>
+              <div class="testimonial-name">Jennifer T.</div>
+              <div class="testimonial-cruise">Alaskan Frontier · Seattle to Glacier Bay</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       NEWSLETTER
+  ═══════════════════════════════════════════════════════ -->
+  <section class="newsletter-section">
+    <div class="container">
+      <h2>Be First to Hear About Exclusive Deals</h2>
+      <p>Join 200,000+ travellers receiving flash sales, new routes, and member-only offers</p>
+      <form class="newsletter-form" id="newsletter-form" novalidate>
+        <input
+          type="email"
+          class="newsletter-input"
+          id="newsletter-email"
+          placeholder="Your email address"
+          required
+          autocomplete="email"
+        />
+        <button type="submit" class="newsletter-submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
   <footer class="footer">
-    <p>
-      Frontend hosted on <strong>AWS Elastic Beanstalk</strong> &bull;
-      Edge-cached via <strong>CloudFront</strong> &bull;
-      Protected by <strong>WAF</strong> &bull;
-      Static assets on <strong>S3</strong>
-    </p>
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Brand -->
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <span class="nav-logo-icon">⚓</span>
+            <span class="nav-logo-text">Azure <span>Voyages</span></span>
+          </a>
+          <p class="footer-tagline">
+            Setting sail to the world's most breathtaking destinations since 1985.
+            Luxury, discovery, and memories that last a lifetime.
+          </p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook">&#128444;</a>
+            <a href="#" aria-label="Instagram">📷</a>
+            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="#" aria-label="YouTube">▶️</a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/cruises">All Cruises</a></li>
+            <li><a href="/destinations">Destinations</a></li>
+            <li><a href="#excursions">Excursions</a></li>
+            <li><a href="#rewards">Loyalty Programme</a></li>
+            <li><a href="#">About Azure Voyages</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Booking Policy</a></li>
+            <li><a href="#">Travel Insurance</a></li>
+            <li><a href="#">Accessibility</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="/media">Media Gallery</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="footer-contact-item">
+            <span class="icon">✉️</span>
+            <span>voyages@azure-voyages.com</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📞</span>
+            <span>1-800-AZURE-VG (1-800-298-7384)</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📍</span>
+            <span>1 Harbor Drive, Suite 2000<br />Miami, FL 33132, USA</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">🕐</span>
+            <span>Mon–Fri 8am–10pm ET<br />Sat–Sun 9am–8pm ET</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          &copy; 2026 Azure Voyages. All rights reserved. &bull;
+          <a href="#" style="color:rgba(255,255,255,0.4);text-decoration:none;margin-left:4px;">Privacy Policy</a> &bull;
+          <a href="#" style="color:rgba(255,255,255,0.4);text-decoration:none;margin-left:4px;">Terms of Service</a>
+        </div>
+        <div class="footer-powered">
+          Powered by <strong>AWS EKS + Elastic Beanstalk</strong> &bull; CloudFront CDN
+        </div>
+      </div>
+    </div>
   </footer>
 
   <script src="/public/js/app.js"></script>

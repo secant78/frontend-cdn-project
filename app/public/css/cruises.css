@@ -1,0 +1,508 @@
+/* ============================================================
+   Azure Voyages — Cruises & Destinations Page Styles
+   ============================================================ */
+
+/* ─── Cruises Page Layout ────────────────────────────────── */
+.cruises-page {
+  background: var(--off-white);
+  min-height: 60vh;
+  padding: 48px 0 80px;
+}
+.cruises-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  align-items: start;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─── Filter Sidebar ─────────────────────────────────────── */
+.filter-sidebar {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 24px;
+  position: sticky;
+  top: calc(var(--nav-height) + 24px);
+  box-shadow: var(--shadow-sm);
+}
+.filter-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.filter-sidebar-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.filter-clear-btn {
+  font-size: 0.82rem;
+  color: var(--ocean);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  transition: color var(--transition);
+}
+.filter-clear-btn:hover { color: var(--teal); }
+.filter-group {
+  margin-bottom: 28px;
+}
+.filter-group:last-child { margin-bottom: 0; }
+.filter-group-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* Checkboxes */
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.filter-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ocean);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.filter-option-label {
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+  flex: 1;
+}
+.filter-option-count {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: var(--off-white);
+  padding: 2px 7px;
+  border-radius: 50px;
+}
+
+/* Radio buttons */
+.filter-radio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.filter-radio input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ocean);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.filter-radio-label {
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* Price Range Slider */
+.price-range-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.price-range-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.price-range-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.price-range-sep {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.price-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--ocean) 0%, var(--ocean) 50%, var(--border) 50%, var(--border) 100%);
+  outline: none;
+  cursor: pointer;
+}
+.price-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ocean);
+  cursor: pointer;
+  border: 2px solid var(--white);
+  box-shadow: 0 2px 6px rgba(0,119,182,0.35);
+  transition: transform var(--transition);
+}
+.price-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.price-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ocean);
+  cursor: pointer;
+  border: 2px solid var(--white);
+  box-shadow: 0 2px 6px rgba(0,119,182,0.35);
+}
+
+/* Sort dropdown */
+.sort-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--white);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6a7e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.sort-select:focus {
+  outline: none;
+  border-color: var(--ocean);
+}
+
+/* ─── Cruise Results Header ──────────────────────────────── */
+.cruise-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cruise-results-count {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.cruise-results-count span {
+  color: var(--ocean);
+}
+.cruise-results-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+.cruise-results-sort .sort-select {
+  width: auto;
+  min-width: 180px;
+}
+
+/* ─── Cruise Card (extended for listings page) ───────────── */
+.cruise-card-full {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.cruise-card-full:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.cruise-card-full .cruise-card-image {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+.cruise-card-full .cruise-card-image img,
+.cruise-card-full .cruise-card-image svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.cruise-card-full:hover .cruise-card-image img,
+.cruise-card-full:hover .cruise-card-image svg {
+  transform: scale(1.06);
+}
+.cruise-dest-gradient {
+  width: 100%;
+  height: 100%;
+}
+
+/* Cabin type tags */
+.cabin-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+.cabin-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ocean);
+  background: rgba(0,119,182,0.08);
+  border: 1px solid rgba(0,119,182,0.2);
+  padding: 3px 9px;
+  border-radius: 50px;
+}
+
+/* Departure date */
+.cruise-departure-date {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+/* Savings badge */
+.price-savings {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #27ae60;
+  background: rgba(39,174,96,0.1);
+  border-radius: 4px;
+  padding: 2px 7px;
+  margin-left: 6px;
+}
+
+/* ─── Destinations Page ──────────────────────────────────── */
+.destinations-page {
+  background: var(--white);
+  padding: 64px 0 96px;
+}
+.destinations-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.destination-card-full {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+.destination-card-full:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.destination-card-full .dest-image {
+  height: 260px;
+  position: relative;
+  overflow: hidden;
+}
+.destination-card-full .dest-image img,
+.destination-card-full .dest-image svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.destination-card-full:hover .dest-image img,
+.destination-card-full:hover .dest-image svg {
+  transform: scale(1.07);
+}
+.destination-card-content {
+  padding: 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.destination-card-content h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.destination-tagline {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ocean);
+  margin-bottom: 12px;
+}
+.destination-description {
+  font-size: 0.93rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 18px;
+  flex: 1;
+}
+.destination-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px;
+  background: var(--off-white);
+  border-radius: var(--radius-sm);
+}
+.destination-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dest-meta-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.dest-meta-value {
+  font-size: 0.88rem;
+  color: var(--navy);
+  font-weight: 500;
+}
+.destination-cruise-count {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ocean);
+  margin-bottom: 16px;
+}
+
+/* ─── Empty / Error States ───────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--text-muted);
+}
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  display: block;
+  opacity: 0.5;
+}
+.empty-state h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.empty-state p {
+  font-size: 0.93rem;
+  max-width: 360px;
+  margin: 0 auto 20px;
+}
+
+/* ─── Active Filters Strip ───────────────────────────────── */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,119,182,0.1);
+  border: 1px solid rgba(0,119,182,0.25);
+  color: var(--ocean);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 50px;
+}
+.active-filter-remove {
+  background: none;
+  border: none;
+  color: var(--ocean);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+.active-filter-remove:hover { opacity: 1; }
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .cruises-layout {
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cruises-layout {
+    grid-template-columns: 1fr;
+  }
+  .filter-sidebar {
+    position: static;
+  }
+  .filter-sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+  .filter-sidebar-body {
+    display: none;
+    margin-top: 20px;
+  }
+  .filter-sidebar-body.open {
+    display: block;
+  }
+  .destinations-page-grid {
+    grid-template-columns: 1fr;
+  }
+  .cruises-page {
+    padding: 32px 0 60px;
+  }
+  .cruise-results-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .destinations-page-grid {
+    padding: 0 16px;
+  }
+  .cruises-layout {
+    padding: 0 16px;
+  }
+}

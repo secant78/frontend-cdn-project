@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Cruises — Azure Voyages</title>
+  <meta name="description" content="Browse all Azure Voyages cruise sailings. Filter by destination, duration, and price to find your perfect voyage." />
+  <link rel="stylesheet" href="/public/css/styles.css" />
+  <link rel="stylesheet" href="/public/css/cruises.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════════════ -->
+  <nav class="nav-wrapper" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-icon">⚓</span>
+        <span class="nav-logo-text">Azure <span>Voyages</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/cruises" class="active">Cruises</a>
+        <a href="/destinations">Destinations</a>
+        <a href="/#excursions">Excursions</a>
+        <a href="/#rewards">Rewards</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="nav-signin">Sign In</button>
+        <a href="/cruises" class="nav-book">Book Now</a>
+      </div>
+
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer -->
+  <div class="nav-mobile-drawer" id="nav-mobile-drawer">
+    <a href="/cruises" class="active">Cruises</a>
+    <a href="/destinations">Destinations</a>
+    <a href="/#excursions">Excursions</a>
+    <a href="/#rewards">Rewards</a>
+    <div class="nav-mobile-actions">
+      <button class="nav-signin">Sign In</button>
+      <a href="/cruises" class="nav-book">Book Now</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       PAGE HERO
+  ═══════════════════════════════════════════════════════ -->
+  <section class="page-hero" style="--wave-color:#f0f7ff;">
+    <div class="hero-eyebrow" style="margin-bottom:20px;">🛳️ Our Complete Sailing Schedule</div>
+    <h1>All Cruises</h1>
+    <p>Explore our full catalogue of voyages — from quick getaways to epic grand adventures</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       CRUISES LAYOUT: SIDEBAR + GRID
+  ═══════════════════════════════════════════════════════ -->
+  <div class="cruises-page">
+    <div class="cruises-layout">
+
+      <!-- ── Filter Sidebar ─────────────────────────────── -->
+      <aside class="filter-sidebar" id="filter-sidebar">
+        <div class="filter-sidebar-header">
+          <span class="filter-sidebar-title">🔧 Filters</span>
+          <button class="filter-clear-btn" id="clear-filters">Clear All</button>
+        </div>
+
+        <!-- Sort By -->
+        <div class="filter-group">
+          <div class="filter-group-title">Sort By</div>
+          <select class="sort-select" id="sort-select">
+            <option value="recommended">Recommended</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="duration-asc">Duration: Shortest First</option>
+            <option value="duration-desc">Duration: Longest First</option>
+            <option value="rating">Highest Rated</option>
+          </select>
+        </div>
+
+        <!-- Destination -->
+        <div class="filter-group">
+          <div class="filter-group-title">Destination</div>
+          <label class="filter-option">
+            <input type="checkbox" name="destination" value="Caribbean" id="f-caribbean" />
+            <span class="filter-option-label">Caribbean</span>
+            <span class="filter-option-count">12</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" name="destination" value="Mediterranean" id="f-mediterranean" />
+            <span class="filter-option-label">Mediterranean</span>
+            <span class="filter-option-count">9</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" name="destination" value="Alaska" id="f-alaska" />
+            <span class="filter-option-label">Alaska</span>
+            <span class="filter-option-count">6</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" name="destination" value="Hawaii" id="f-hawaii" />
+            <span class="filter-option-label">Hawaii</span>
+            <span class="filter-option-count">5</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" name="destination" value="Bahamas" id="f-bahamas" />
+            <span class="filter-option-label">Bahamas</span>
+            <span class="filter-option-count">8</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" name="destination" value="Europe" id="f-europe" />
+            <span class="filter-option-label">Northern Europe</span>
+            <span class="filter-option-count">4</span>
+          </label>
+        </div>
+
+        <!-- Duration -->
+        <div class="filter-group">
+          <div class="filter-group-title">Duration</div>
+          <label class="filter-radio">
+            <input type="radio" name="duration" value="" id="dur-all" checked />
+            <span class="filter-radio-label">Any Duration</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="duration" value="3-5" id="dur-short" />
+            <span class="filter-radio-label">3–5 Nights</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="duration" value="6-8" id="dur-mid" />
+            <span class="filter-radio-label">6–8 Nights</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="duration" value="9-12" id="dur-long" />
+            <span class="filter-radio-label">9–12 Nights</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="duration" value="13+" id="dur-epic" />
+            <span class="filter-radio-label">13+ Nights</span>
+          </label>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-group">
+          <div class="filter-group-title">Price Per Person</div>
+          <div class="price-range-wrap">
+            <div class="price-range-display">
+              <span class="price-range-value" id="price-min-display">$0</span>
+              <span class="price-range-sep">—</span>
+              <span class="price-range-value" id="price-max-display">$3,000</span>
+            </div>
+            <input
+              type="range"
+              class="price-slider"
+              id="price-max-slider"
+              min="0"
+              max="3000"
+              step="50"
+              value="3000"
+            />
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ── Cruise Results ──────────────────────────────── -->
+      <main>
+        <div class="cruise-results-header">
+          <div class="cruise-results-count">
+            Showing <span id="results-count">6</span> cruises
+          </div>
+        </div>
+
+        <!-- Active filters strip -->
+        <div class="active-filters" id="active-filters"></div>
+
+        <!-- Loading state -->
+        <div class="loading-spinner" id="cruises-loading">
+          <div class="spinner"></div>
+          <span>Loading cruises&hellip;</span>
+        </div>
+
+        <!-- Results grid -->
+        <div class="cruises-grid hidden" id="cruises-grid" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr));">
+          <!-- Populated by app.js -->
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state hidden" id="cruises-empty">
+          <span class="empty-state-icon">🚢</span>
+          <h3>No Cruises Found</h3>
+          <p>Try adjusting your filters to see more results.</p>
+          <button class="btn btn-outline" id="empty-clear-filters">Clear Filters</button>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <span class="nav-logo-icon">⚓</span>
+            <span class="nav-logo-text">Azure <span>Voyages</span></span>
+          </a>
+          <p class="footer-tagline">
+            Setting sail to the world's most breathtaking destinations since 1985.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/cruises">All Cruises</a></li>
+            <li><a href="/destinations">Destinations</a></li>
+            <li><a href="/#excursions">Excursions</a></li>
+            <li><a href="/#rewards">Loyalty Programme</a></li>
+            <li><a href="/">Home</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Booking Policy</a></li>
+            <li><a href="#">Travel Insurance</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="/media">Media Gallery</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="footer-contact-item">
+            <span class="icon">✉️</span>
+            <span>voyages@azure-voyages.com</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📞</span>
+            <span>1-800-AZURE-VG</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="icon">📍</span>
+            <span>1 Harbor Drive, Miami, FL 33132</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copyright">&copy; 2026 Azure Voyages. All rights reserved.</div>
+        <div class="footer-powered">Powered by <strong>AWS EKS &middot; Elastic Beanstalk &middot; CloudFront &middot; WAF</strong></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/public/js/app.js"></script>
+</body>
+</html>

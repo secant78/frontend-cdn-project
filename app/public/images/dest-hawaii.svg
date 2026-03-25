@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c0392b;stop-opacity:0.9" />
+      <stop offset="40%" style="stop-color:#e67e22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f39c12;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="volcano" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7f1f1f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a1010;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="water" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0077b6;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#023e8a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)" />
+  <!-- Sun / glow -->
+  <circle cx="680" cy="100" r="80" fill="#fff176" opacity="0.25"/>
+  <circle cx="680" cy="100" r="55" fill="#ffd700" opacity="0.5"/>
+  <!-- Volcano -->
+  <polygon points="250,380 380,160 510,380" fill="url(#volcano)" />
+  <polygon points="360,200 380,160 400,200" fill="#e74c3c" opacity="0.8"/>
+  <!-- Lava glow -->
+  <ellipse cx="380" cy="170" rx="20" ry="8" fill="#ff6b35" opacity="0.9"/>
+  <!-- Palm tree -->
+  <line x1="600" y1="380" x2="615" y2="250" stroke="#5c3d11" stroke-width="10" stroke-linecap="round"/>
+  <ellipse cx="575" cy="255" rx="55" ry="18" fill="#27ae60" transform="rotate(-25 575 255)"/>
+  <ellipse cx="648" cy="248" rx="58" ry="16" fill="#2ecc71" transform="rotate(20 648 248)"/>
+  <ellipse cx="615" cy="240" rx="46" ry="14" fill="#27ae60" transform="rotate(-5 615 240)"/>
+  <!-- Water -->
+  <path d="M0 375 Q100 350 200 372 Q300 395 400 368 Q500 342 600 368 Q700 395 800 365 L800 500 L0 500 Z" fill="url(#water)" />
+  <path d="M0 415 Q150 395 300 412 Q450 432 600 410 Q700 398 800 415 L800 500 L0 500 Z" fill="#023e8a" opacity="0.6" />
+  <!-- Text -->
+  <text x="400" y="200" font-family="Georgia, serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle" opacity="0.95" letter-spacing="3">Hawaii</text>
+  <text x="400" y="255" font-family="Georgia, serif" font-size="26" fill="white" text-anchor="middle" opacity="0.85">Aloha Spirit &amp; Volcanic Beauty</text>
+</svg>
