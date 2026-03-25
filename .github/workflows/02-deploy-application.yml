@@ -158,22 +158,30 @@ jobs:
             --version-label "${VERSION_LABEL}" \
             --region ${{ env.AWS_REGION }}
 
-          echo "Waiting for deployment to complete..."
-          aws elasticbeanstalk wait environment-updated \
-            --application-name "${EB_APP_NAME}" \
-            --environment-names "${EB_ENV_NAME}" \
-            --region ${{ env.AWS_REGION }}
-
-          HEALTH=$(aws elasticbeanstalk describe-environments \
-            --application-name "${EB_APP_NAME}" \
-            --environment-names "${EB_ENV_NAME}" \
-            --region ${{ env.AWS_REGION }} \
-            --query "Environments[0].Health" \
-            --output text)
-
-          echo "Environment health: ${HEALTH}"
-          if [ "${HEALTH}" == "Red" ]; then
-            echo "Deployment failed — environment health is Red"
-            exit 1
-          fi
-          echo "Deployment complete!"
+          echo "Waiting for deployment to complete (max 15 min)..."
+          for i in $(seq 1 45); do
+            STATUS=$(aws elasticbeanstalk describe-environments \
+              --application-name "${EB_APP_NAME}" \
+              --environment-names "${EB_ENV_NAME}" \
+              --region ${{ env.AWS_REGION }} \
+              --query "Environments[0].Status" \
+              --output text)
+            HEALTH=$(aws elasticbeanstalk describe-environments \
+              --application-name "${EB_APP_NAME}" \
+              --environment-names "${EB_ENV_NAME}" \
+              --region ${{ env.AWS_REGION }} \
+              --query "Environments[0].Health" \
+              --output text)
+            echo "  [$i/45] Status: ${STATUS} | Health: ${HEALTH}"
+            if [ "${STATUS}" == "Ready" ]; then
+              echo "Deployment complete! Final health: ${HEALTH}"
+              if [ "${HEALTH}" == "Red" ]; then
+                echo "Environment health is Red — deployment may have issues"
+                exit 1
+              fi
+              exit 0
+            fi
+            sleep 20
+          done
+          echo "Timed out after 15 minutes waiting for environment to become Ready"
+          exit 1
