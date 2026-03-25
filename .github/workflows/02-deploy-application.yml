@@ -137,7 +137,7 @@ jobs:
           VERSION_LABEL: "v${{ github.run_number }}-${{ github.sha }}"
           EB_APP_NAME: "frontend-cdn-app-production"
           EB_ENV_NAME: "frontend-cdn-env-production"
-          S3_BUCKET: "frontend-cdn-eb-deploy-production"
+          S3_BUCKET: "frontend-cdn-eb-deployments-production"
         run: |
           S3_KEY="eb-versions/${EB_APP_NAME}/${VERSION_LABEL}.zip"
 
