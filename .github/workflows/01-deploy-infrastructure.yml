@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "frontend-cdn-project/infrastructure/terraform/**"
+      - "infrastructure/terraform/**"
       - ".github/workflows/01-deploy-infrastructure.yml"
   workflow_dispatch:
     inputs:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend-cdn-project/infrastructure/terraform
+        working-directory: infrastructure/terraform
 
     steps:
       - name: Checkout
@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: deployment-output
-          path: frontend-cdn-project/infrastructure/terraform/deployment_output.json
+          path: infrastructure/terraform/deployment_output.json
           if-no-files-found: warn
 
       - name: Post summary

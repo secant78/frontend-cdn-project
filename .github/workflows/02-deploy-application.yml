@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "frontend-cdn-project/app/**"
+      - "app/**"
       - ".github/workflows/02-deploy-application.yml"
   workflow_dispatch:
     inputs:
@@ -21,7 +21,6 @@ env:
   AWS_REGION: us-east-1
   ENV_NAME: ${{ github.event.inputs.env_name || 'production' }}
   NODE_VERSION: "18"
-  PYTHON_VERSION: "3.11"
 
 jobs:
   # ── Job 1: Build & lint the Node.js app ─────────────────────────────────
@@ -30,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend-cdn-project/app
+        working-directory: app
 
     steps:
       - name: Checkout
@@ -63,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-bundle
-          path: frontend-cdn-project/app-bundle.zip
+          path: app-bundle.zip
           retention-days: 5
 
   # ── Job 2: Sync static assets to S3 + invalidate CloudFront ────────────
@@ -127,75 +126,54 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: frontend-cdn-eb-deploy
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install boto3
-        run: pip install boto3
-
       - name: Download app bundle
         uses: actions/download-artifact@v4
         with:
           name: app-bundle
-          path: frontend-cdn-project/
+          path: ./
 
       - name: Deploy to Elastic Beanstalk
-        working-directory: frontend-cdn-project/infrastructure
         env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           VERSION_LABEL: "v${{ github.run_number }}-${{ github.sha }}"
+          EB_APP_NAME: "frontend-cdn-app-production"
+          EB_ENV_NAME: "frontend-cdn-env-production"
+          S3_BUCKET: "frontend-cdn-eb-deploy-production"
         run: |
-          python - <<'EOF'
-          import sys, os, boto3, datetime
-          sys.path.insert(0, ".")
-          from config import AWS_REGION, EB_APP_NAME, EB_ENV_NAME, S3_EB_DEPLOY_BUCKET
+          S3_KEY="eb-versions/${EB_APP_NAME}/${VERSION_LABEL}.zip"
 
-          version_label = os.environ.get("VERSION_LABEL", f"v{datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S')}")
-          bundle_path   = "../app-bundle.zip"
-          s3_key        = f"eb-versions/{EB_APP_NAME}/{version_label}.zip"
+          echo "Uploading bundle to s3://${S3_BUCKET}/${S3_KEY}"
+          aws s3 cp app-bundle.zip "s3://${S3_BUCKET}/${S3_KEY}"
 
-          s3 = boto3.client("s3", region_name=AWS_REGION)
-          eb = boto3.client("elasticbeanstalk", region_name=AWS_REGION)
+          echo "Creating application version: ${VERSION_LABEL}"
+          aws elasticbeanstalk create-application-version \
+            --application-name "${EB_APP_NAME}" \
+            --version-label "${VERSION_LABEL}" \
+            --source-bundle "S3Bucket=${S3_BUCKET},S3Key=${S3_KEY}" \
+            --region ${{ env.AWS_REGION }}
 
-          print(f"Uploading bundle to s3://{S3_EB_DEPLOY_BUCKET}/{s3_key}")
-          with open(bundle_path, "rb") as f:
-              s3.put_object(Bucket=S3_EB_DEPLOY_BUCKET, Key=s3_key, Body=f)
+          echo "Deploying to environment: ${EB_ENV_NAME}"
+          aws elasticbeanstalk update-environment \
+            --application-name "${EB_APP_NAME}" \
+            --environment-name "${EB_ENV_NAME}" \
+            --version-label "${VERSION_LABEL}" \
+            --region ${{ env.AWS_REGION }}
 
-          print(f"Creating application version: {version_label}")
-          eb.create_application_version(
-              ApplicationName=EB_APP_NAME,
-              VersionLabel=version_label,
-              SourceBundle={"S3Bucket": S3_EB_DEPLOY_BUCKET, "S3Key": s3_key},
-              Process=True,
-          )
+          echo "Waiting for deployment to complete..."
+          aws elasticbeanstalk wait environment-updated \
+            --application-name "${EB_APP_NAME}" \
+            --environment-names "${EB_ENV_NAME}" \
+            --region ${{ env.AWS_REGION }}
 
-          print(f"Deploying to environment: {EB_ENV_NAME}")
-          eb.update_environment(
-              ApplicationName=EB_APP_NAME,
-              EnvironmentName=EB_ENV_NAME,
-              VersionLabel=version_label,
-          )
+          HEALTH=$(aws elasticbeanstalk describe-environments \
+            --application-name "${EB_APP_NAME}" \
+            --environment-names "${EB_ENV_NAME}" \
+            --region ${{ env.AWS_REGION }} \
+            --query "Environments[0].Health" \
+            --output text)
 
-          print("Deployment triggered. Monitoring health...")
-          import time
-          for _ in range(30):
-              envs = eb.describe_environments(
-                  ApplicationName=EB_APP_NAME,
-                  EnvironmentNames=[EB_ENV_NAME],
-              )["Environments"]
-              if envs:
-                  status = envs[0]["Status"]
-                  health = envs[0].get("Health", "Grey")
-                  print(f"  Status={status}, Health={health}")
-                  if status == "Ready" and health in ("Green", "Ok"):
-                      print("Environment is Ready and healthy!")
-                      sys.exit(0)
-                  if status == "Ready" and health == "Red":
-                      print("Environment ready but unhealthy — deployment may have failed")
-                      sys.exit(1)
-              time.sleep(20)
-          print("Timed out waiting for Ready state")
-          sys.exit(1)
-          EOF
+          echo "Environment health: ${HEALTH}"
+          if [ "${HEALTH}" == "Red" ]; then
+            echo "Deployment failed — environment health is Red"
+            exit 1
+          fi
+          echo "Deployment complete!"
