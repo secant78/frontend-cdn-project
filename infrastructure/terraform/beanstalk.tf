@@ -91,10 +91,13 @@ resource "aws_iam_role_policy_attachment" "eb_managed_updates" {
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy"
 }
 
-# Full EB service role permissions (includes ec2:DescribeImages and other required actions)
+# Correct managed policy for EB service roles — includes s3:GetObjectAcl,
+# ec2:DescribeImages, and every other action EB needs to execute deployments.
+# (AdministratorAccess-AWSElasticBeanstalk is for IAM *users* who manage EB,
+#  not for the service role that EB itself assumes.)
 resource "aws_iam_role_policy_attachment" "eb_service" {
   role       = aws_iam_role.eb_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkServiceRolePolicy"
 }
 
 # ─── Elastic Beanstalk Application ───────────────────────────────────────────

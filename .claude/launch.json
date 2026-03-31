@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "azure-voyages",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "cwd": "C:\\Users\\Sean Cancino\\Desktop\\Coding Projects\\frontend-cdn-project\\app",
+      "port": 8080
+    }
+  ]
+}

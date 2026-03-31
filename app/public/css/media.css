@@ -1,140 +1,192 @@
 /* =========================================================
-   media.css — styles for the media gallery page
+   media.css — Azure Voyages gallery page
+   Depends on: styles.css (Azure Voyages variables)
    ========================================================= */
 
 /* ── Active nav link ─────────────────────────────────────── */
-.nav-active { color: var(--text) !important; font-weight: 600; }
+.nav-active { color: var(--ocean) !important; font-weight: 600; }
 
 /* ── Page hero ───────────────────────────────────────────── */
 .media-hero {
-  padding: 56px 24px 48px;
+  padding: 72px 24px 52px;          /* clear the fixed nav */
   text-align: center;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(188,140,255,.07), transparent);
-  border-bottom: 1px solid var(--border);
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-bottom: 1px solid rgba(255,255,255,.08);
 }
 .media-hero h1 {
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 800;
-  letter-spacing: -.5px;
+  font-weight: 700;
+  color: var(--white);
   margin-bottom: 10px;
-  background: linear-gradient(135deg, #e6edf3 40%, #bc8cff);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
-.media-hero p { color: var(--text-muted); font-size: 1rem; max-width: 520px; margin: 0 auto; }
-.media-hero strong { color: var(--text); }
+.media-hero p {
+  color: rgba(255,255,255,.65);
+  font-size: 1rem;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.media-hero strong { color: var(--teal); }
 
 /* ── Gallery controls ────────────────────────────────────── */
 .gallery-controls-wrap {
   border-bottom: 1px solid var(--border);
-  background: var(--bg);
-  position: sticky; top: 57px; z-index: 90;
+  background: var(--white);
+  position: sticky;
+  top: var(--nav-height, 72px);    /* match Azure Voyages nav height */
+  z-index: 90;
+  box-shadow: 0 2px 8px rgba(10,22,40,.06);
 }
 .gallery-controls {
-  max-width: 1200px; margin: 0 auto;
-  padding: 14px 24px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
+
+/* Filter tabs */
 .filter-tabs { display: flex; gap: 4px; }
 .filter-tab {
-  background: none; border: 1px solid transparent;
-  color: var(--text-muted); cursor: pointer;
-  padding: 6px 16px; border-radius: 20px;
-  font-size: 0.86rem; font-weight: 500;
-  transition: background .15s, color .15s, border-color .15s;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  font-family: inherit;
 }
-.filter-tab:hover { color: var(--text); background: var(--bg2); }
+.filter-tab:hover {
+  color: var(--ocean);
+  background: rgba(0,119,182,.06);
+}
 .filter-tab.active {
-  background: rgba(188,140,255,.12);
-  border-color: rgba(188,140,255,.35);
-  color: var(--accent-purple);
+  background: rgba(0,119,182,.1);
+  border-color: rgba(0,119,182,.4);
+  color: var(--ocean);
+  font-weight: 600;
 }
-.gallery-count { font-size: 0.82rem; color: var(--text-muted); white-space: nowrap; }
+.gallery-count {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
 
 /* ── Gallery grid ─────────────────────────────────────────── */
 .gallery-wrap {
-  max-width: 1200px; margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 32px 24px 64px;
+  background: var(--white);
 }
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
 
-/* ── Media card (shared) ──────────────────────────────────── */
+/* ── Media card ───────────────────────────────────────────── */
 .media-card {
-  background: var(--bg2);
+  background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
-  transition: border-color .2s, transform .2s, box-shadow .2s;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 .media-card:hover {
-  border-color: var(--accent-purple);
+  border-color: var(--ocean);
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  box-shadow: var(--shadow-lg);
+}
+.media-card:focus-visible {
+  outline: 2px solid var(--ocean);
+  outline-offset: 2px;
 }
 
-/* Thumbnail wrapper — fixed 16:9 */
+/* Thumbnail — fixed 16:10 ratio */
 .card-thumb {
-  position: relative; overflow: hidden;
+  position: relative;
+  overflow: hidden;
   aspect-ratio: 16 / 10;
-  background: var(--bg3);
+  background: var(--off-white);
 }
 .card-thumb img {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform .3s;
+  transition: transform 0.3s ease;
 }
 .media-card:hover .card-thumb img { transform: scale(1.04); }
 
 /* Category pill */
 .card-category {
-  position: absolute; top: 10px; left: 10px;
-  background: rgba(13,17,23,.75);
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(10,22,40,.7);
   backdrop-filter: blur(6px);
-  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 3px 10px;
-  font-size: 0.72rem; font-weight: 600;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--white);
   letter-spacing: .3px;
 }
 
-/* ── Photo card specifics ────────────────────────────────── */
+/* ── Photo card ───────────────────────────────────────────── */
 .card-photo-overlay {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(13,17,23,0);
-  transition: background .2s;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10,22,40,0);
+  transition: background var(--transition);
 }
-.media-card:hover .card-photo-overlay { background: rgba(13,17,23,.35); }
+.media-card:hover .card-photo-overlay {
+  background: rgba(10,22,40,.35);
+}
 .card-expand-icon {
-  width: 44px; height: 44px;
-  background: rgba(13,17,23,.7);
-  border: 1px solid rgba(255,255,255,.15);
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,.9);
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-  color: #fff;
-  opacity: 0; transform: scale(.8);
-  transition: opacity .2s, transform .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--navy);
+  opacity: 0;
+  transform: scale(.8);
+  transition: opacity var(--transition), transform var(--transition);
 }
-.media-card:hover .card-expand-icon { opacity: 1; transform: scale(1); }
+.media-card:hover .card-expand-icon {
+  opacity: 1;
+  transform: scale(1);
+}
 
-/* ── Video card specifics ────────────────────────────────── */
+/* ── Video card ───────────────────────────────────────────── */
 .card-play-btn {
   position: absolute;
-  top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 52px; height: 52px;
-  background: rgba(188,140,255,.9);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  background: var(--ocean);
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(188,140,255,.4);
-  transition: transform .2s, background .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,119,182,.45);
+  transition: transform var(--transition), background var(--transition);
 }
 .card-play-btn::after {
   content: "";
@@ -144,62 +196,83 @@
   border-color: transparent transparent transparent #fff;
   margin-left: 3px;
 }
-.media-card:hover .card-play-btn { transform: translate(-50%, -50%) scale(1.1); background: var(--accent-purple); }
+.media-card:hover .card-play-btn {
+  transform: translate(-50%, -50%) scale(1.12);
+  background: var(--teal);
+}
 .card-duration {
-  position: absolute; bottom: 8px; right: 10px;
-  background: rgba(13,17,23,.8);
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  background: rgba(10,22,40,.75);
   border-radius: 4px;
   padding: 2px 7px;
-  font-size: 0.75rem; color: var(--text); font-family: monospace;
+  font-size: 0.75rem;
+  color: #fff;
+  font-family: monospace;
 }
 
 /* ── Card body ───────────────────────────────────────────── */
 .card-body { padding: 14px 16px 16px; }
 .card-title {
-  font-size: 0.95rem; font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   margin-bottom: 4px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card-desc {
-  font-size: 0.82rem; color: var(--text-muted);
+  font-size: 0.82rem;
+  color: var(--text-muted);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .card-meta {
-  display: flex; align-items: center; gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-top: 10px;
 }
 .card-type-badge {
-  font-size: 0.7rem; font-weight: 700; letter-spacing: .4px;
-  padding: 2px 8px; border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: .4px;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 .card-type-badge.photo {
-  background: rgba(63,185,80,.12); color: var(--accent-green);
-  border: 1px solid rgba(63,185,80,.25);
+  background: rgba(0,180,216,.1);
+  color: var(--teal);
+  border: 1px solid rgba(0,180,216,.3);
 }
 .card-type-badge.video {
-  background: rgba(188,140,255,.12); color: var(--accent-purple);
-  border: 1px solid rgba(188,140,255,.25);
+  background: rgba(0,119,182,.1);
+  color: var(--ocean);
+  border: 1px solid rgba(0,119,182,.3);
 }
 
 /* ── Skeleton loading ────────────────────────────────────── */
 .skeleton-card {
-  background: var(--bg2);
+  background: var(--off-white);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius);
   aspect-ratio: 16/12;
   animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: .45; }
+  50%       { opacity: .4; }
 }
 
 /* ── Empty state ─────────────────────────────────────────── */
 .gallery-empty {
-  text-align: center; padding: 80px 24px; color: var(--text-muted);
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--text-muted);
 }
 .gallery-empty span { font-size: 3rem; display: block; margin-bottom: 12px; }
 .gallery-empty p { font-size: 1rem; }
@@ -209,9 +282,13 @@
    LIGHTBOX
    ========================================================= */
 .lightbox {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0,0,0,.92);
-  display: flex; align-items: center; justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10,22,40,.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   backdrop-filter: blur(4px);
   animation: fade-in .18s ease;
 }
@@ -223,17 +300,21 @@
   position: relative;
   max-width: min(90vw, 960px);
   max-height: 90vh;
-  display: flex; flex-direction: column; align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .lightbox-img {
-  max-width: 100%; max-height: 80vh;
-  border-radius: 6px;
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: var(--radius-sm);
   display: block;
-  box-shadow: 0 8px 48px rgba(0,0,0,.7);
+  box-shadow: 0 8px 48px rgba(0,0,0,.6);
 }
 .lightbox-caption {
   margin-top: 14px;
-  color: var(--text-muted); font-size: 0.9rem;
+  color: rgba(255,255,255,.7);
+  font-size: 0.9rem;
   text-align: center;
 }
 
@@ -241,28 +322,40 @@
 .lightbox-prev,
 .lightbox-next {
   position: fixed;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12);
-  color: #fff; cursor: pointer;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  color: #fff;
+  cursor: pointer;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background .15s, transform .15s;
   line-height: 1;
 }
-.lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
-  background: rgba(255,255,255,.18); transform: scale(1.08);
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: rgba(255,255,255,.2);
+  transform: scale(1.08);
 }
 .lightbox-close {
-  top: 20px; right: 20px;
-  width: 40px; height: 40px;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
   font-size: 1.4rem;
 }
-.lightbox-prev, .lightbox-next {
-  top: 50%; transform: translateY(-50%);
-  width: 48px; height: 48px;
+.lightbox-prev,
+.lightbox-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
   font-size: 2rem;
 }
-.lightbox-prev:hover, .lightbox-next:hover { transform: translateY(-50%) scale(1.08); }
+.lightbox-prev:hover,
+.lightbox-next:hover { transform: translateY(-50%) scale(1.08); }
 .lightbox-prev { left: 20px; }
 .lightbox-next { right: 20px; }
 
@@ -270,56 +363,79 @@
    VIDEO MODAL
    ========================================================= */
 .video-modal {
-  position: fixed; inset: 0; z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: fade-in .18s ease;
 }
 .video-modal[hidden] { display: none; }
 
 .video-modal-backdrop {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,.88);
+  position: absolute;
+  inset: 0;
+  background: rgba(10,22,40,.88);
   backdrop-filter: blur(6px);
 }
 .video-modal-inner {
-  position: relative; z-index: 1;
+  position: relative;
+  z-index: 1;
   width: min(90vw, 840px);
-  background: var(--bg2);
+  background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 16px 64px rgba(0,0,0,.6);
+  box-shadow: var(--shadow-lg);
 }
 .video-modal-title-bar {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 14px 20px 0;
 }
-.video-modal-title { font-size: 1rem; font-weight: 700; }
+.video-modal-title { font-size: 1rem; font-weight: 700; color: var(--text); }
 .video-modal-cat {
-  font-size: 0.72rem; font-weight: 700; letter-spacing: .4px;
-  background: rgba(188,140,255,.12); color: var(--accent-purple);
-  border: 1px solid rgba(188,140,255,.25);
-  padding: 2px 8px; border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: .4px;
+  background: rgba(0,119,182,.1);
+  color: var(--ocean);
+  border: 1px solid rgba(0,119,182,.25);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 .video-wrapper { padding: 12px 0 0; }
 #vm-player {
-  width: 100%; display: block;
+  width: 100%;
+  display: block;
   background: #000;
   max-height: 65vh;
 }
 .video-modal-desc {
   padding: 12px 20px 18px;
-  font-size: 0.85rem; color: var(--text-muted);
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 .video-modal-close {
-  position: absolute; top: 12px; right: 14px;
-  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-  color: var(--text); cursor: pointer;
-  border-radius: 50%; width: 34px; height: 34px;
-  font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
-  transition: background .15s;
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
 }
-.video-modal-close:hover { background: rgba(255,255,255,.14); }
+.video-modal-close:hover { background: var(--border); }
 
 /* =========================================================
    RESPONSIVE
