@@ -436,7 +436,7 @@ const DESTINATIONS_CATALOG = [
     climate: "Tropical",
     bestTime: "Nov – Apr",
     cruiseCount: 12,
-    image: "/public/images/dest-caribbean.svg",
+    image: "/images/caribbean.jpg",
   },
   {
     id: "dest-2",
@@ -448,7 +448,7 @@ const DESTINATIONS_CATALOG = [
     climate: "Mediterranean",
     bestTime: "May – Oct",
     cruiseCount: 9,
-    image: "/public/images/dest-mediterranean.svg",
+    image: "/images/naples.webp",
   },
   {
     id: "dest-3",
@@ -460,7 +460,7 @@ const DESTINATIONS_CATALOG = [
     climate: "Subarctic",
     bestTime: "May – Sep",
     cruiseCount: 6,
-    image: "/public/images/dest-alaska.svg",
+    image: "/images/alaska.jpg",
   },
   {
     id: "dest-4",
@@ -472,7 +472,7 @@ const DESTINATIONS_CATALOG = [
     climate: "Tropical",
     bestTime: "Apr – Oct",
     cruiseCount: 5,
-    image: "/public/images/dest-hawaii.svg",
+    image: "/images/hawaii.jpg",
   },
   {
     id: "dest-5",
@@ -484,7 +484,7 @@ const DESTINATIONS_CATALOG = [
     climate: "Tropical",
     bestTime: "Dec – Apr",
     cruiseCount: 8,
-    image: "/public/images/dest-bahamas.svg",
+    image: "/images/bahamas.jpg",
   },
   {
     id: "dest-6",
@@ -496,7 +496,7 @@ const DESTINATIONS_CATALOG = [
     climate: "Temperate",
     bestTime: "Jun – Aug",
     cruiseCount: 4,
-    image: "/public/images/dest-europe.svg",
+    image: "/images/copenhagen.avif",
   },
 ];
 

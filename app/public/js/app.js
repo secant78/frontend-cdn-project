@@ -40,6 +40,18 @@ function getCategoryGradient(category) {
   return map[category] || map['Caribbean'];
 }
 
+function getCategoryImage(category) {
+  const map = {
+    'Caribbean':    '/images/caribbean.jpg',
+    'Mediterranean':'/images/naples.webp',
+    'Alaska':       '/images/alaska.jpg',
+    'Hawaii':       '/images/hawaii.jpg',
+    'Bahamas':      '/images/bahamas.jpg',
+    'Europe':       '/images/copenhagen.avif',
+  };
+  return map[category] || map['Caribbean'];
+}
+
 function getCategoryEmoji(category) {
   const map = {
     'Caribbean': '🏝️', 'Mediterranean': '🏛️', 'Alaska': '🧊',
@@ -153,14 +165,23 @@ function buildCruiseCard(cruise) {
   return `
     <article class="cruise-card">
       <div class="cruise-card-image">
+        <img
+          src="${getCategoryImage(cruise.category)}"
+          alt="${escapeHtml(cruise.category)} cruise"
+          loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;"
+          onerror="this.style.cssText='display:none';this.nextElementSibling.style.display='flex';"
+        />
         <div style="
+          display:none;
           width:100%;
           height:100%;
           background:${getCategoryGradient(cruise.category)};
-          display:flex;
           align-items:center;
           justify-content:center;
           font-size:3.5rem;
+          position:absolute;
+          inset:0;
         ">${getCategoryEmoji(cruise.category)}</div>
         <span class="cruise-badge">${escapeHtml(cruise.category)}</span>
         ${savings > 0 ? `<span class="cruise-badge-sale">Save ${savings}%</span>` : ''}
@@ -288,7 +309,14 @@ function buildCruiseCardFull(cruise) {
   return `
     <article class="cruise-card-full">
       <div class="cruise-card-image">
-        <div class="cruise-dest-gradient" style="background:${getCategoryGradient(cruise.category)};display:flex;align-items:center;justify-content:center;font-size:4rem;">${getCategoryEmoji(cruise.category)}</div>
+        <img
+          src="${getCategoryImage(cruise.category)}"
+          alt="${escapeHtml(cruise.category)} cruise"
+          loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;"
+          onerror="this.style.cssText='display:none';this.nextElementSibling.style.display='flex';"
+        />
+        <div class="cruise-dest-gradient" style="display:none;background:${getCategoryGradient(cruise.category)};align-items:center;justify-content:center;font-size:4rem;position:absolute;inset:0;">${getCategoryEmoji(cruise.category)}</div>
         <span class="cruise-badge">${escapeHtml(cruise.category)}</span>
         ${savings > 0 ? `<span class="cruise-badge-sale">Save ${savings}%</span>` : ''}
       </div>
@@ -543,14 +571,13 @@ function buildDestinationCardFull(dest) {
   return `
     <article class="destination-card-full">
       <div class="dest-image">
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,${escapeHtml(dest.color)},${escapeHtml(dest.color)}99);display:flex;align-items:center;justify-content:center;">
-          <img
-            src="/public/images/dest-${escapeHtml(dest.name.toLowerCase().replace(/\s+/g,'-'))}.svg"
-            alt="${escapeHtml(dest.name)} destination"
-            style="width:100%;height:100%;object-fit:cover;"
-            onerror="this.style.display='none'"
-          />
-        </div>
+        <img
+          src="${escapeHtml(dest.image)}"
+          alt="${escapeHtml(dest.name)} destination"
+          loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;"
+          onerror="this.style.cssText='display:none';this.parentElement.style.background='linear-gradient(135deg,'+${JSON.stringify(dest.color)}+','+${JSON.stringify(dest.color)}+'99)';"
+        />
       </div>
       <div class="destination-card-content">
         <h3>${escapeHtml(dest.name)}</h3>
