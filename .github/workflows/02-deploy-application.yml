@@ -158,6 +158,60 @@ jobs:
             --version-label "${VERSION_LABEL}" \
             --region ${{ env.AWS_REGION }}
 
+          # ── Helper: dump diagnostics when health is Red ──────────────────
+          diagnose() {
+            echo ""
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "  EB DIAGNOSTICS"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+            echo ""
+            echo "── Recent EB Events ─────────────────────────────────────"
+            aws elasticbeanstalk describe-events \
+              --environment-name "${EB_ENV_NAME}" \
+              --region ${{ env.AWS_REGION }} \
+              --max-items 20 \
+              --query "Events[*].[EventDate,Severity,Message]" \
+              --output text || true
+
+            echo ""
+            echo "── Instance Health Details ──────────────────────────────"
+            aws elasticbeanstalk describe-instances-health \
+              --environment-name "${EB_ENV_NAME}" \
+              --region ${{ env.AWS_REGION }} \
+              --attribute-names All \
+              --query "InstanceHealthList[*].{ID:InstanceId,Health:HealthStatus,Color:Color,Causes:Causes}" \
+              --output json || true
+
+            echo ""
+            echo "── Direct HTTP Check (EB CNAME) ─────────────────────────"
+            EB_CNAME=$(aws elasticbeanstalk describe-environments \
+              --environment-names "${EB_ENV_NAME}" \
+              --region ${{ env.AWS_REGION }} \
+              --query "Environments[0].CNAME" \
+              --output text)
+            echo "  Endpoint: http://${EB_CNAME}/health"
+            curl -s -m 10 -w "\n  HTTP Status: %{http_code}\n  Total time: %{time_total}s\n" \
+              "http://${EB_CNAME}/health" || echo "  curl: unreachable"
+
+            echo ""
+            echo "── Requesting Tail Logs from Instances ──────────────────"
+            aws elasticbeanstalk request-environment-info \
+              --environment-name "${EB_ENV_NAME}" \
+              --info-type tail \
+              --region ${{ env.AWS_REGION }} || true
+            sleep 15
+            aws elasticbeanstalk retrieve-environment-info \
+              --environment-name "${EB_ENV_NAME}" \
+              --info-type tail \
+              --region ${{ env.AWS_REGION }} \
+              --query "EnvironmentInfo[*].{Source:SourceType,Info:Message}" \
+              --output text || true
+
+            echo ""
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          }
+
           echo "Waiting for deployment to complete (max 15 min)..."
           for i in $(seq 1 45); do
             STATUS=$(aws elasticbeanstalk describe-environments \
@@ -176,12 +230,14 @@ jobs:
             if [ "${STATUS}" == "Ready" ]; then
               echo "Deployment complete! Final health: ${HEALTH}"
               if [ "${HEALTH}" == "Red" ]; then
-                echo "Environment health is Red — deployment may have issues"
+                diagnose
+                echo "Environment health is Red — see diagnostics above"
                 exit 1
               fi
               exit 0
             fi
             sleep 20
           done
+          diagnose
           echo "Timed out after 15 minutes waiting for environment to become Ready"
           exit 1
