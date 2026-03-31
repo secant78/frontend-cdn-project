@@ -42,10 +42,7 @@ resource "aws_eks_cluster" "main" {
   role_arn = aws_iam_role.eks_cluster.arn
 
   vpc_config {
-    # Include both public and private subnets so EKS can place ENIs and ALBs correctly
     subnet_ids = [
-      aws_subnet.private_1.id,
-      aws_subnet.private_2.id,
       aws_subnet.public_1.id,
       aws_subnet.public_2.id,
     ]
@@ -106,8 +103,9 @@ resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = "${local.eks_cluster_name}-nodes"
   node_role_arn   = aws_iam_role.eks_nodes.arn
-  subnet_ids      = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+  subnet_ids      = [aws_subnet.public_1.id, aws_subnet.public_2.id]
   instance_types  = [var.eks_node_instance_type]
+  capacity_type   = "SPOT"   # ~70% cheaper than on-demand for a test project
   version         = var.eks_version
 
   scaling_config {
