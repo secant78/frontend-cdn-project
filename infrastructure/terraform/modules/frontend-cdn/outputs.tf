@@ -87,3 +87,15 @@ output "eks_public_subnet_ids" {
   description = "Public subnet IDs where ALBs are provisioned"
   value       = [aws_subnet.public_1.id, aws_subnet.public_2.id]
 }
+
+# ─── ECR ─────────────────────────────────────────────────────────────────────
+
+output "ecr_booking_service_url" {
+  description = "ECR repository URL for booking-service"
+  value       = aws_ecr_repository.booking_service.repository_url
+}
+
+output "ecr_payment_service_url" {
+  description = "ECR repository URL for payment-service"
+  value       = aws_ecr_repository.payment_service.repository_url
+}

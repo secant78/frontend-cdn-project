@@ -1,0 +1,206 @@
+name: "05 · Deploy Services → EKS"
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  Builds Docker images for booking-service and payment-service, pushes them
+#  to ECR, and rolls out the new images to the EKS dev cluster.
+#
+#  Triggers:
+#    • Push to main when service code or k8s manifests change
+#    • workflow_dispatch for manual redeploys
+#
+#  Prerequisites (one-time setup):
+#    1. Infrastructure applied:  terragrunt apply  (in infrastructure/live/dev)
+#    2. Kubeconfig updated:      aws eks update-kubeconfig --name frontend-cdn-eks-dev
+#    3. Namespace + services:    kubectl apply -f k8s/
+#    4. Get ALB DNS:             kubectl get ingress cruise-api-ingress -n cruise-services
+#    5. Set eks_alb_dns in infrastructure/live/dev/terragrunt.hcl, re-apply
+# ══════════════════════════════════════════════════════════════════════════════
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/**"
+      - "k8s/**"
+      - ".github/workflows/05-deploy-services.yml"
+
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Which service to deploy (or 'all')"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - booking-service
+          - payment-service
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION:   us-east-1
+  EKS_CLUSTER:  frontend-cdn-eks-dev
+  NAMESPACE:    cruise-services
+  PROJECT:      frontend-cdn
+
+jobs:
+  # ════════════════════════════════════════════════════════════════════════════
+  #  Job 1 — Build & push Docker images to ECR
+  # ════════════════════════════════════════════════════════════════════════════
+  build-and-push:
+    name: "Build & Push → ECR"
+    runs-on: ubuntu-latest
+
+    outputs:
+      image_tag: ${{ steps.tag.outputs.tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: frontend-cdn-ecr-push
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Generate image tag
+        id: tag
+        run: |
+          TAG="${GITHUB_SHA::8}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "Image tag: ${TAG}"
+
+      - name: Build & push booking-service
+        if: |
+          github.event_name == 'push' ||
+          inputs.service == 'all' ||
+          inputs.service == 'booking-service'
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG:    ${{ steps.tag.outputs.tag }}
+        run: |
+          REPO="${ECR_REGISTRY}/${PROJECT}-booking-service"
+          docker build -t "${REPO}:${IMAGE_TAG}" -t "${REPO}:latest" services/booking-service/
+          docker push "${REPO}:${IMAGE_TAG}"
+          docker push "${REPO}:latest"
+          echo "Pushed ${REPO}:${IMAGE_TAG}"
+
+      - name: Build & push payment-service
+        if: |
+          github.event_name == 'push' ||
+          inputs.service == 'all' ||
+          inputs.service == 'payment-service'
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG:    ${{ steps.tag.outputs.tag }}
+        run: |
+          REPO="${ECR_REGISTRY}/${PROJECT}-payment-service"
+          docker build -t "${REPO}:${IMAGE_TAG}" -t "${REPO}:latest" services/payment-service/
+          docker push "${REPO}:${IMAGE_TAG}"
+          docker push "${REPO}:latest"
+          echo "Pushed ${REPO}:${IMAGE_TAG}"
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  Job 2 — Apply k8s manifests and roll out new images
+  # ════════════════════════════════════════════════════════════════════════════
+  deploy:
+    name: "Deploy → EKS"
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: frontend-cdn-eks-deploy
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.30.0"
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ env.AWS_REGION }} \
+            --name ${{ env.EKS_CLUSTER }}
+
+      - name: Get ECR registry
+        id: ecr
+        run: |
+          REGISTRY=$(aws ecr describe-repositories \
+            --repository-names "${PROJECT}-booking-service" \
+            --query "repositories[0].repositoryUri" \
+            --output text | sed 's|/.*||')
+          echo "registry=${REGISTRY}" >> $GITHUB_OUTPUT
+
+      - name: Apply namespace & base manifests
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+
+      - name: Deploy booking-service
+        if: |
+          github.event_name == 'push' ||
+          inputs.service == 'all' ||
+          inputs.service == 'booking-service'
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG:    ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          # Substitute actual ECR registry into the manifest before applying
+          sed "s|ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com|${ECR_REGISTRY}|g" \
+            k8s/booking-service.yaml | \
+            sed "s|:latest|:${IMAGE_TAG}|g" | \
+            kubectl apply -f -
+
+          kubectl rollout status deployment/booking-service \
+            -n ${{ env.NAMESPACE }} --timeout=120s
+
+      - name: Deploy payment-service
+        if: |
+          github.event_name == 'push' ||
+          inputs.service == 'all' ||
+          inputs.service == 'payment-service'
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG:    ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          sed "s|ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com|${ECR_REGISTRY}|g" \
+            k8s/payment-service.yaml | \
+            sed "s|:latest|:${IMAGE_TAG}|g" | \
+            kubectl apply -f -
+
+          kubectl rollout status deployment/payment-service \
+            -n ${{ env.NAMESPACE }} --timeout=120s
+
+      - name: Apply ingress
+        run: kubectl apply -f k8s/ingress.yaml
+
+      - name: Print service endpoints
+        run: |
+          echo "## Service Endpoints" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pods" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          kubectl get pods -n ${{ env.NAMESPACE }} >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Ingress (ALB DNS)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          kubectl get ingress cruise-api-ingress -n ${{ env.NAMESPACE }} >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "Ingress not yet provisioned" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
