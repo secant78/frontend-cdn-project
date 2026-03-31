@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 8080;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 
+//temporarily comment out helmet
+/*
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -26,6 +28,8 @@ app.use(
     crossOriginEmbedderPolicy: false,
   })
 );
+*/
+
 
 app.use(compression());
 app.use(morgan("combined"));
