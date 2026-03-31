@@ -33,7 +33,6 @@ app.set("trust proxy", 1);
 
 // Static files (CSS, JS, images, SVGs) — short cache for dev, 1 day for prod
 app.use(
-  "/public",
   express.static(path.join(__dirname, "public"), {
     maxAge: process.env.NODE_ENV === "production" ? "1d" : 0,
     etag: true,
