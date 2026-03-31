@@ -54,8 +54,11 @@ jobs:
 
       - name: Archive app bundle
         run: |
-          # Zip everything except node_modules; CI will npm install on EB
-          zip -r ../app-bundle.zip . --exclude="node_modules/*" --exclude=".git/*"
+          # Include node_modules (production-only from npm ci --omit=dev above)
+          # so EB never needs to run npm install at deploy time. This makes
+          # deployments faster, deterministic, and independent of npm registry
+          # availability on the EB instances.
+          zip -r ../app-bundle.zip . --exclude=".git/*"
           echo "Bundle size: $(du -sh ../app-bundle.zip | cut -f1)"
 
       - name: Upload bundle artifact
@@ -166,13 +169,20 @@ jobs:
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
             echo ""
+            echo "── Active Version on Environment ────────────────────────"
+            aws elasticbeanstalk describe-environments \
+              --environment-names "${EB_ENV_NAME}" \
+              --region ${{ env.AWS_REGION }} \
+              --query "Environments[0].{Version:VersionLabel,Health:Health,Status:Status}" \
+              --output table 2>&1 || true
+
+            echo ""
             echo "── Recent EB Events ─────────────────────────────────────"
             aws elasticbeanstalk describe-events \
               --environment-name "${EB_ENV_NAME}" \
               --region ${{ env.AWS_REGION }} \
-              --max-items 20 \
-              --query "Events[*].[EventDate,Severity,Message]" \
-              --output text || true
+              --max-items 30 \
+              --output text 2>&1 || true
 
             echo ""
             echo "── Instance Health Details ──────────────────────────────"
