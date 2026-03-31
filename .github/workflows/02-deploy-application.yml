@@ -20,7 +20,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   ENV_NAME: ${{ github.event.inputs.env_name || 'production' }}
-  NODE_VERSION: "18"
+  NODE_VERSION: "20"
 
 jobs:
   # ── Job 1: Build & lint the Node.js app ─────────────────────────────────
