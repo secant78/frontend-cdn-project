@@ -55,10 +55,18 @@ jobs:
       - name: Archive app bundle
         run: |
           # Include node_modules (production-only from npm ci --omit=dev above)
-          # so EB never needs to run npm install at deploy time. This makes
-          # deployments faster, deterministic, and independent of npm registry
-          # availability on the EB instances.
-          zip -r ../app-bundle.zip . --exclude=".git/*"
+          # so EB never needs to run npm install at deploy time.
+          #
+          # Exclude .ebextensions — every option it sets (NODE_ENV, nginx proxy,
+          # enhanced health, healthcheck URL) is already configured by Terraform
+          # via the environment API. On AL2023 + ALB environments EB validates
+          # .ebextensions before touching instances; the "Application Healthcheck
+          # URL" option under aws:elasticbeanstalk:application is rejected as an
+          # invalid configuration for ALB-type environments, causing immediate
+          # deployment rollback (Version stays None). All Terraform settings
+          # persist across deployments so removing .ebextensions from the bundle
+          # has no functional effect.
+          zip -r ../app-bundle.zip . --exclude=".git/*" --exclude=".ebextensions/*"
           echo "Bundle size: $(du -sh ../app-bundle.zip | cut -f1)"
 
       - name: Upload bundle artifact
