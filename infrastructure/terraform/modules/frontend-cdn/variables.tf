@@ -1,11 +1,10 @@
 variable "env_name" {
-  description = "Environment name (production or staging)"
+  description = "Environment name: dev | staging | production"
   type        = string
-  default     = "production"
 
   validation {
-    condition     = contains(["production", "staging"], var.env_name)
-    error_message = "env_name must be 'production' or 'staging'."
+    condition     = contains(["dev", "staging", "production"], var.env_name)
+    error_message = "env_name must be 'dev', 'staging', or 'production'."
   }
 }
 
@@ -37,7 +36,7 @@ variable "acm_cert_arn" {
 variable "eb_instance_type" {
   description = "EC2 instance type for Elastic Beanstalk instances"
   type        = string
-  default     = "t3.small"
+  default     = "t3.micro"
 }
 
 variable "eb_min_instances" {

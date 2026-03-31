@@ -1,13 +1,8 @@
 terraform {
   required_version = ">= 1.6.0"
 
-  # Terraform Cloud — replace YOUR_ORG_NAME with your Terraform Cloud organization
-  cloud {
-    organization = "sean-test"
-    workspaces {
-      name = "frontend-cdn-project"
-    }
-  }
+  # Backend is injected by Terragrunt — see infrastructure/live/terragrunt.hcl.
+  # Never add a backend block here; Terragrunt generates backend.tf at plan time.
 
   required_providers {
     aws = {

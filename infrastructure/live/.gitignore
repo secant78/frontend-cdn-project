@@ -1,0 +1,27 @@
+# Terragrunt cache (local working copies of the module + generated files)
+.terragrunt-cache/
+
+# Generated backend/provider files
+backend.tf
+provider.tf
+
+# Terraform state — never commit
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+# Terraform plan output
+tfplan
+*.tfplan
+
+# Terraform working directory
+.terraform/
+.terraform.lock.hcl
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Sensitive var files
+*.tfvars
+!*.tfvars.example

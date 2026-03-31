@@ -97,7 +97,7 @@ resource "aws_iam_role_policy_attachment" "eb_managed_updates" {
 #  not for the service role that EB itself assumes.)
 resource "aws_iam_role_policy_attachment" "eb_service" {
   role       = aws_iam_role.eb_service_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkServiceRolePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth"
 }
 
 # ─── Elastic Beanstalk Application ───────────────────────────────────────────
@@ -185,7 +185,7 @@ resource "aws_elastic_beanstalk_environment" "main" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "NODE_ENV"
-    value     = "production"
+    value     = local.node_env   # dev→"development" | staging→"staging" | prod→"production"
   }
 
   # ── Health reporting ──────────────────────────────────────────────────────

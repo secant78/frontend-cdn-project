@@ -1,42 +1,56 @@
-name: "01 · Deploy Infrastructure (Terraform)"
+name: "01 · Deploy Infrastructure (Terragrunt)"
 
 on:
   push:
     branches: [main]
     paths:
-      - "infrastructure/terraform/**"
+      - "infrastructure/**"
       - ".github/workflows/01-deploy-infrastructure.yml"
+
   workflow_dispatch:
     inputs:
       env_name:
-        description: "Environment name (production or staging)"
-        required: false
-        default: "production"
+        description: "Environment to deploy"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
       action:
-        description: "Terraform action to run (plan or apply)"
-        required: false
-        default: "apply"
-      acm_cert_arn:
-        description: "ACM certificate ARN for custom domain HTTPS (optional)"
-        required: false
-        default: ""
+        description: "Terragrunt action"
+        required: true
+        default: "plan"
+        type: choice
+        options:
+          - plan
+          - apply
 
 permissions:
-  id-token: write   # OIDC token for AWS authentication
+  id-token: write
   contents: read
 
 env:
   AWS_REGION: us-east-1
-  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}          # Terraform Cloud API token
-  TF_WORKSPACE: frontend-cdn-project                  # Must match workspace name in main.tf
+  # Terragrunt version pinned — bump here to upgrade all envs at once
+  TERRAGRUNT_VERSION: "0.67.6"
 
 jobs:
-  terraform:
-    name: "Terraform ${{ github.event.inputs.action || 'apply' }}"
+  # ════════════════════════════════════════════════════════════════════════════
+  #  On push to main → plan all three environments in parallel (read-only, safe)
+  #  On workflow_dispatch → plan or apply the selected environment
+  # ════════════════════════════════════════════════════════════════════════════
+
+  # ── Auto plan on push (all envs in parallel) ─────────────────────────────
+  plan-all:
+    name: "Plan · ${{ matrix.env }}"
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infrastructure/terraform
+    strategy:
+      fail-fast: false          # show all three results even if one fails
+      matrix:
+        env: [dev, staging, production]
 
     steps:
       - name: Checkout
@@ -47,69 +61,106 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-          role-session-name: frontend-cdn-terraform
+          role-session-name: frontend-cdn-tf-plan-${{ matrix.env }}
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~> 1.6"
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        id: plan
+      - name: Set up Terragrunt
         run: |
-          set -o pipefail
+          curl -sL \
+            "https://github.com/gruntwork-io/terragrunt/releases/download/v${{ env.TERRAGRUNT_VERSION }}/terragrunt_linux_amd64" \
+            -o /usr/local/bin/terragrunt
+          chmod +x /usr/local/bin/terragrunt
+          terragrunt --version
 
-          # Pass acm_cert_arn only when provided; otherwise let the null default apply
-          ACM_ARN="${{ github.event.inputs.acm_cert_arn }}"
-          if [ -n "$ACM_ARN" ]; then
-            CERT_VAR="-var=acm_cert_arn=${ACM_ARN}"
-          else
-            CERT_VAR=""
-          fi
+      - name: Terragrunt Plan — ${{ matrix.env }}
+        working-directory: infrastructure/live/${{ matrix.env }}
+        run: |
+          terragrunt init --terragrunt-non-interactive
+          terragrunt plan --terragrunt-non-interactive -no-color 2>&1 | tee plan_output.txt
 
-          terraform plan \
-            -var="env_name=${{ github.event.inputs.env_name || 'production' }}" \
-            $CERT_VAR \
-            -out=tfplan \
-            -no-color 2>&1 | tee plan_output.txt
+      - name: Post plan summary
+        if: always()
+        run: |
+          echo "## Terragrunt Plan · ${{ matrix.env }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -50 infrastructure/live/${{ matrix.env }}/plan_output.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
-      - name: Terraform Apply
-        if: ${{ github.event.inputs.action != 'plan' }}
-        run: terraform apply -auto-approve tfplan
+  # ── Manual apply for a specific environment ───────────────────────────────
+  apply-env:
+    name: "${{ github.event.inputs.action }} · ${{ github.event.inputs.env_name }}"
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.env_name }}   # approval gate for staging/prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: frontend-cdn-tf-${{ github.event.inputs.action }}-${{ github.event.inputs.env_name }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.6"
+
+      - name: Set up Terragrunt
+        run: |
+          curl -sL \
+            "https://github.com/gruntwork-io/terragrunt/releases/download/v${{ env.TERRAGRUNT_VERSION }}/terragrunt_linux_amd64" \
+            -o /usr/local/bin/terragrunt
+          chmod +x /usr/local/bin/terragrunt
+          terragrunt --version
+
+      - name: Terragrunt Init
+        working-directory: infrastructure/live/${{ github.event.inputs.env_name }}
+        run: terragrunt init --terragrunt-non-interactive
+
+      - name: Terragrunt Plan
+        id: plan
+        working-directory: infrastructure/live/${{ github.event.inputs.env_name }}
+        run: |
+          terragrunt plan --terragrunt-non-interactive -no-color -out=tfplan 2>&1 | tee plan_output.txt
+
+      - name: Terragrunt Apply
+        if: github.event.inputs.action == 'apply'
+        working-directory: infrastructure/live/${{ github.event.inputs.env_name }}
+        run: terragrunt apply --terragrunt-non-interactive -auto-approve tfplan
 
       - name: Capture outputs
-        if: ${{ github.event.inputs.action != 'plan' }}
-        run: terraform output -json > deployment_output.json
+        if: github.event.inputs.action == 'apply'
+        working-directory: infrastructure/live/${{ github.event.inputs.env_name }}
+        run: terragrunt output -json > deployment_output.json
 
       - name: Upload deployment output
-        if: ${{ github.event.inputs.action != 'plan' }}
+        if: github.event.inputs.action == 'apply'
         uses: actions/upload-artifact@v4
         with:
-          name: deployment-output
-          path: infrastructure/terraform/deployment_output.json
+          name: deployment-output-${{ github.event.inputs.env_name }}
+          path: infrastructure/live/${{ github.event.inputs.env_name }}/deployment_output.json
           if-no-files-found: warn
 
       - name: Post summary
         if: always()
         run: |
-          echo "## Terraform Infrastructure Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Terragrunt ${{ github.event.inputs.action }} · ${{ github.event.inputs.env_name }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Setting | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| Environment | ${{ github.event.inputs.env_name || 'production' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Action | ${{ github.event.inputs.action || 'apply' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Workspace | ${{ env.TF_WORKSPACE }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ github.event.inputs.env_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Action | ${{ github.event.inputs.action }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Region | ${{ env.AWS_REGION }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f deployment_output.json ]; then
-            echo "### Outputs" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
-            cat deployment_output.json >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "### Plan Output (last 80 lines)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -80 infrastructure/live/${{ github.event.inputs.env_name }}/plan_output.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
